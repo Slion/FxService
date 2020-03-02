@@ -1,0 +1,63 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <PreferenceCategory app:title="@string/filters_header"
+        app:summary="@string/pref_summary_filters">
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_filter_close_case"
+            app:title="@string/pref_title_filter_close_case"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_filter_open_case"
+            app:title="@string/pref_title_filter_open_case"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_filter_close_keyboard"
+            app:title="@string/pref_title_filter_close_keyboard"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_filter_open_keyboard"
+            app:title="@string/pref_title_filter_open_keyboard"
+            app:defaultValue="true" />
+
+    </PreferenceCategory>
+
+
+
+    <PreferenceCategory app:title="@string/messages_header">
+
+        <EditTextPreference
+            app:key="signature"
+            app:title="@string/signature_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="reply"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="reply"
+            app:title="@string/reply_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/sync_title" />
+
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="@string/attachment_title" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

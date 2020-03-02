@@ -15,30 +15,17 @@
 package net.slions.fxservice;
 
 import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.GestureDescription;
-import android.app.Notification;
 import android.content.Context;
-import android.graphics.Path;
-import android.graphics.PixelFormat;
-import android.media.AudioManager;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
+
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.view.KeyEvent;
 import android.widget.Toast;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 public class FxService extends AccessibilityService {
 
@@ -94,7 +81,7 @@ public class FxService extends AccessibilityService {
 
                 // Consume both up and down events to prevent the system doing anything with those
                 // That notably prevents the trigger of search F3 in chrome browser
-                return true;
+                return getPrefBoolean(R.string.pref_key_filter_close_case,true);
             }
             else if (keyCode == KeyEvent.KEYCODE_F4)
             {
@@ -115,20 +102,20 @@ public class FxService extends AccessibilityService {
                 }
 
                 // Consume both up and down events to prevent the system doing anything with those
-                return true;
+                return getPrefBoolean(R.string.pref_key_filter_open_case,true);
             }
             else if (keyCode == KeyEvent.KEYCODE_F5)
             {
                 // Keyboard closed
                 // Consume both up and down events to prevent the system doing anything with those
                 // Fix issue with browser page reload when closing keyboard
-                return true;
+                return getPrefBoolean(R.string.pref_key_filter_close_keyboard,true);
             }
             else if (keyCode == KeyEvent.KEYCODE_F6)
             {
                 // Keyboard opened
                 // Consume both up and down events to prevent the system doing anything with those
-                return true;
+                return getPrefBoolean(R.string.pref_key_filter_open_keyboard,true);
             }
 
 
@@ -142,6 +129,13 @@ public class FxService extends AccessibilityService {
 
     }
 
+    //
+    private boolean getPrefBoolean(int aKey, Boolean aDefault)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getBoolean(getResources().getString(aKey),true);
+
+    }
 
     private void turnOnScreen() {
         PowerManager.WakeLock screenLock = null;
