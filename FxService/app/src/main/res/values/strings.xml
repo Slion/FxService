@@ -45,5 +45,7 @@
     <string name="pref_title_case_close_lock_screen">Lock screen</string>
 
 
+    <!-- Toast -->
+    <string name="toast_screen_lock_abort">"Screen lock aborted!"</string>
 
 </resources>

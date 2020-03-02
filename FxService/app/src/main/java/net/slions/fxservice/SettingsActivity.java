@@ -1,6 +1,9 @@
 package net.slions.fxservice;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,10 +29,22 @@ public class SettingsActivity extends AppCompatActivity {
                 .commit();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            // Show back button on action bar
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Make sure the back button closes the application
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
 
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

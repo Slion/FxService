@@ -17,6 +17,10 @@ package net.slions.fxservice;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.PowerManager;
 import androidx.annotation.RequiresApi;
@@ -27,8 +31,16 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-public class FxService extends AccessibilityService {
+public class FxService extends AccessibilityService
+        implements SensorEventListener
+{
 
+    // System sensor manager instance.
+    private SensorManager iSensorManager;
+    // Proximity and light sensors, as retrieved from the sensor manager.
+    private Sensor iSensorProximity;
+
+    private float iLastProximityValue = 0;
 
     Handler iHandler = new Handler();
     Runnable iLockScreenCallback = new Runnable() {
@@ -57,6 +69,17 @@ public class FxService extends AccessibilityService {
         wm.addView(mLayout, lp);
         */
 
+        // Get an instance of the sensor manager.
+        iSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        // Get light and proximity sensors from the sensor manager.
+        // The getDefaultSensor() method returns null if the sensor
+        // is not available on the device.
+        iSensorProximity = iSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        if (iSensorProximity != null) {
+            iSensorManager.registerListener(this, iSensorProximity, SensorManager.SENSOR_DELAY_UI);
+        }
 
     }
 
@@ -100,12 +123,7 @@ public class FxService extends AccessibilityService {
                     // Only show message if lock was requested
                     if (getPrefBoolean(R.string.pref_key_case_close_lock_screen,true))
                     {
-                        Context context = getApplicationContext();
-                        CharSequence text = "Screen lock aborted!";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(this, text, duration);
-                        toast.show();
+                        Toast.makeText(this, R.string.toast_screen_lock_abort, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -155,16 +173,9 @@ public class FxService extends AccessibilityService {
 
 
     private void turnOnScreen() {
-        PowerManager.WakeLock screenLock = null;
-        if ((getSystemService(POWER_SERVICE)) != null) {
-
-            screenLock = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(
-                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "FxTecComp:wakelocktag");
-            screenLock.acquire(10*60*1000L /*10 minutes*/);
-
-
-            screenLock.release();
-        }
+        PowerManager.WakeLock wakeLock = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "FxService:wakeLock");
+        wakeLock.acquire(5000);
     }
 
 
@@ -175,6 +186,54 @@ public class FxService extends AccessibilityService {
 
     @Override
     public void onInterrupt() {
+        iSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event)
+    {
+        // The sensor type (as defined in the Sensor class).
+        int sensorType = event.sensor.getType();
+
+        // The new data value of the sensor.  Both the light and proximity
+        // sensors report one value at a time, which is always the first
+        // element in the values array.
+        float currentValue = event.values[0];
+
+        switch (sensorType) {
+            // Event came from the light sensor.
+            case Sensor.TYPE_LIGHT:
+                // Set the light sensor text view to the light sensor string
+                // from the resources, with the placeholder filled in.
+                //mTextSensorLight.setText(getResources().getString(R.string.label_light, currentValue));
+                break;
+            case Sensor.TYPE_PROXIMITY:
+                // Set the proximity sensor text view to the light sensor
+                // string from the resources, with the placeholder filled in.
+                //mTextSensorProximity.setText(getResources().getString(R.string.label_proximity, currentValue));
+
+                // If no proximity and previously proximity then wake up the screen for defined time
+                if (currentValue>0 && iLastProximityValue == 0)
+                {
+                    // To be safe just cancel possible callbacks
+                    iHandler.removeCallbacks(iLockScreenCallback);
+                    //
+                    turnOnScreen();
+                }
+
+                iLastProximityValue = currentValue;
+
+                break;
+            default:
+                // do nothing
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+    {
 
     }
+
+
 }
