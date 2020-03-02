@@ -76,7 +76,11 @@ public class FxService extends AccessibilityService {
                 if (action == KeyEvent.ACTION_UP)
                 {
                     // Only perform action on key up
-                    iHandler.postDelayed(iLockScreenCallback, 3000);
+                    // Check if user want us to lock screen when closing her case
+                    if (getPrefBoolean(R.string.pref_key_case_close_lock_screen,true))
+                    {
+                        iHandler.postDelayed(iLockScreenCallback, getPrefInt(R.string.pref_key_case_close_delay,0) * 1000);
+                    }
                 }
 
                 // Consume both up and down events to prevent the system doing anything with those
@@ -87,18 +91,22 @@ public class FxService extends AccessibilityService {
             {
                 // Case opened
                 // Abort screen lock
-
                 if (action == KeyEvent.ACTION_UP)
                 {
                     // Only perform action on key up
+                    // To be safe just cancel possible callbacks
                     iHandler.removeCallbacks(iLockScreenCallback);
 
-                    Context context = getApplicationContext();
-                    CharSequence text = "Screen lock aborted!";
-                    int duration = Toast.LENGTH_SHORT;
+                    // Only show message if lock was requested
+                    if (getPrefBoolean(R.string.pref_key_case_close_lock_screen,true))
+                    {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Screen lock aborted!";
+                        int duration = Toast.LENGTH_SHORT;
 
-                    Toast toast = Toast.makeText(this, text, duration);
-                    toast.show();
+                        Toast toast = Toast.makeText(this, text, duration);
+                        toast.show();
+                    }
                 }
 
                 // Consume both up and down events to prevent the system doing anything with those
@@ -133,9 +141,18 @@ public class FxService extends AccessibilityService {
     private boolean getPrefBoolean(int aKey, Boolean aDefault)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return preferences.getBoolean(getResources().getString(aKey),true);
+        return preferences.getBoolean(getResources().getString(aKey),aDefault);
 
     }
+
+    private int getPrefInt(int aKey, int aDefault)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getInt(getResources().getString(aKey),aDefault);
+
+    }
+
+
 
     private void turnOnScreen() {
         PowerManager.WakeLock screenLock = null;
