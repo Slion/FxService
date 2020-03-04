@@ -2,8 +2,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
+    <SwitchPreferenceCompat
+        app:key="@string/pref_key_accessibility_service"
+        app:title="@string/pref_title_accessibility_service"
+        app:summary="@string/pref_summary_accessibility_service"
+        app:defaultValue="false"
+        app:iconSpaceReserved="false"
+        />
+
     <PreferenceCategory app:title="@string/pref_category_case_close"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_case_close_lock_screen"
@@ -22,12 +31,36 @@
             app:showSeekBarValue="true"
             app:iconSpaceReserved="false"
             />
-
     </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_category_proximity_sensor"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service">
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_proximity_wake_up"
+            app:title="@string/pref_title_proximity_wake_up"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:dependency="@string/pref_key_proximity_wake_up"
+            app:key="@string/pref_key_proximity_wake_up_timeout"
+            app:title="@string/pref_title_proximity_wake_up_timeout"
+            app:defaultValue="5"
+            app:min="1"
+            android:max="60"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+    </PreferenceCategory>
+
 
     <PreferenceCategory app:title="@string/pref_category_filters"
         app:summary="@string/pref_summary_filters"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_filter_close_case"

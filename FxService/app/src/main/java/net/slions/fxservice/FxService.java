@@ -32,7 +32,8 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 public class FxService extends AccessibilityService
-        implements SensorEventListener
+        implements SensorEventListener,
+         SharedPreferences.OnSharedPreferenceChangeListener
 {
 
     // System sensor manager instance.
@@ -53,6 +54,8 @@ public class FxService extends AccessibilityService
 
     @Override
     protected void onServiceConnected() {
+
+        super.onServiceConnected();
         // Create an overlay and display the action bar
         /*
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -69,27 +72,87 @@ public class FxService extends AccessibilityService
         wm.addView(mLayout, lp);
         */
 
+        setupProximitySensor();
+
+        // Get notification when preferences are changed
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+
+        Toast.makeText(this, R.string.toast_service_connected, Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+    }
+
+    @Override
+    public void onInterrupt() {
+        closeProximitySensor();
+        Toast.makeText(this, R.string.toast_service_interrupted, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+    {
+        if (key == getResources().getString(R.string.pref_key_proximity_wake_up))
+        {
+            // Setup proximity sensor anew
+            setupProximitySensor();
+        }
+    }
+
+
+
+    private void setupProximitySensor()
+    {
+        // Open proximity sensor if needed
+        if (getPrefBoolean(R.string.pref_key_proximity_wake_up,true))
+        {
+            Toast.makeText(this, R.string.toast_proximity_sensor_enabled, Toast.LENGTH_SHORT).show();
+            openProximitySensor();
+        }
+        else
+        {
+            Toast.makeText(this, R.string.toast_proximity_sensor_disabled, Toast.LENGTH_SHORT).show();
+            closeProximitySensor();
+        }
+
+    }
+
+    private void openProximitySensor()
+    {
         // Get an instance of the sensor manager.
         iSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        // Get light and proximity sensors from the sensor manager.
-        // The getDefaultSensor() method returns null if the sensor
-        // is not available on the device.
+        // Get proximity sensor from the sensor manager.
         iSensorProximity = iSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-
         if (iSensorProximity != null) {
             iSensorManager.registerListener(this, iSensorProximity, SensorManager.SENSOR_DELAY_UI);
         }
 
     }
 
+    private void closeProximitySensor()
+    {
+        if (iSensorManager!=null)
+        {
+            iSensorManager.unregisterListener(this);
+        }
+
+        iSensorManager = null;
+        iSensorProximity = null;
+    }
+
+
     @Override
     public boolean onKeyEvent(KeyEvent event) {
         int action = event.getAction();
         int keyCode = event.getKeyCode();
 
-        Log.d("FxTec", event.toString());
+        //Log.d("FxTec", event.toString());
 
+        // Here we handle case and keyboard, open and close events
+        // Ideally we should do that using sensors rather than intercepting key events.
 
         if (event.getMetaState() == KeyEvent.META_FUNCTION_ON)
         {
@@ -155,7 +218,7 @@ public class FxService extends AccessibilityService
 
     }
 
-    //
+    // Fetch specified boolean preference
     private boolean getPrefBoolean(int aKey, Boolean aDefault)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -163,6 +226,7 @@ public class FxService extends AccessibilityService
 
     }
 
+    // Fetch specified integer preference
     private int getPrefInt(int aKey, int aDefault)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -171,33 +235,24 @@ public class FxService extends AccessibilityService
     }
 
 
-
-    private void turnOnScreen() {
+    private void turnOnScreen(int aTimeout) {
         PowerManager.WakeLock wakeLock = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(
                 PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "FxService:wakeLock");
-        wakeLock.acquire(5000);
+        wakeLock.acquire(aTimeout);
     }
 
-
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-
-    }
-
-    @Override
-    public void onInterrupt() {
-        iSensorManager.unregisterListener(this);
-    }
 
     @Override
     public void onSensorChanged(SensorEvent event)
     {
+        if (event.values.length==0)
+        {
+            // No data
+            return;
+        }
+
         // The sensor type (as defined in the Sensor class).
         int sensorType = event.sensor.getType();
-
-        // The new data value of the sensor.  Both the light and proximity
-        // sensors report one value at a time, which is always the first
-        // element in the values array.
         float currentValue = event.values[0];
 
         switch (sensorType) {
@@ -208,17 +263,13 @@ public class FxService extends AccessibilityService
                 //mTextSensorLight.setText(getResources().getString(R.string.label_light, currentValue));
                 break;
             case Sensor.TYPE_PROXIMITY:
-                // Set the proximity sensor text view to the light sensor
-                // string from the resources, with the placeholder filled in.
-                //mTextSensorProximity.setText(getResources().getString(R.string.label_proximity, currentValue));
-
                 // If no proximity and previously proximity then wake up the screen for defined time
                 if (currentValue>0 && iLastProximityValue == 0)
                 {
                     // To be safe just cancel possible callbacks
                     iHandler.removeCallbacks(iLockScreenCallback);
                     //
-                    turnOnScreen();
+                    turnOnScreen(getPrefInt(R.string.pref_key_proximity_wake_up_timeout,5) * 1000);
                 }
 
                 iLastProximityValue = currentValue;

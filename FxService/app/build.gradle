@@ -7,16 +7,20 @@ android {
         applicationId "net.slions.fxservice"
         minSdkVersion 28
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    flavorDimensions "version"
+
+    productFlavors {
+        FxService {
+            dimension "version"
+            applicationIdSuffix ".download"
         }
     }
+
 }
 
 dependencies {

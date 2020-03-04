@@ -28,24 +28,42 @@
     <string name="pref_key_filter_close_keyboard">pref_key_filter_close_keyboard</string>
     <string name="pref_key_case_close_delay">pref_key_case_close_delay</string>
     <string name="pref_key_case_close_lock_screen">pref_key_case_close_lock_screen</string>
+    <string name="pref_key_proximity_wake_up">pref_key_proximity_wake_up</string>
+    <string name="pref_key_proximity_wake_up_timeout">pref_key_proximity_wake_up_timeout</string>
+    <string name="pref_key_accessibility_service">pref_key_accessibility_service</string>
 
-    <!-- Filters Preferences -->
+
+    <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
+    <string name="pref_summary_accessibility_service">Enable this for Fx Service to work at all.</string>
+
+
+
+    <string name="pref_title_accessibility_service">Accessibility service</string>
+
+    <!-- Categories Titles -->
+    <string name="pref_category_filters">Filters</string>
+    <string name="pref_category_case_close">Case close</string>
+    <string name="pref_category_proximity_sensor">Proximity sensor</string>
+
+    <!-- Preferences: Case close  -->
+    <string name="pref_title_case_close_delay">Lock screen after n seconds</string>
+    <string name="pref_title_case_close_lock_screen">Lock screen</string>
+
+    <!-- Preferences: Proximity sensor -->
+    <string name="pref_title_proximity_wake_up">Wake up screen</string>
+    <string name="pref_title_proximity_wake_up_timeout">Wake up screen for n seconds</string>
+
+    <!-- Preferences: Filters -->
     <string name="pref_title_filter_open_case">Case open (Fn+F4)</string>
     <string name="pref_title_filter_close_case">Case close (Fn+F3)</string>
     <string name="pref_title_filter_open_keyboard">Keyboard open (Fn+F6)</string>
     <string name="pref_title_filter_close_keyboard">Keyboard close (Fn+F5)</string>
 
-    <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
-
-
-    <!-- Preference Titles -->
-    <string name="pref_category_filters">Filters</string>
-    <string name="pref_category_case_close">Case close</string>
-    <string name="pref_title_case_close_delay">Lock screen after n seconds</string>
-    <string name="pref_title_case_close_lock_screen">Lock screen</string>
-
-
     <!-- Toast -->
-    <string name="toast_screen_lock_abort">"Screen lock aborted!"</string>
+    <string name="toast_screen_lock_abort">"Fx Service: Screen Lock Aborted"</string>
+    <string name="toast_service_connected">"Fx Service: Connected"</string>
+    <string name="toast_service_interrupted">"Fx Service: Interrupted"</string>
+    <string name="toast_proximity_sensor_enabled">"Fx Service: Proximity Sensor Enabled"</string>
+    <string name="toast_proximity_sensor_disabled">"Fx Service: Proximity Sensor Disabled"</string>
 
 </resources>
