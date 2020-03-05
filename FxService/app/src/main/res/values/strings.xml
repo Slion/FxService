@@ -31,17 +31,20 @@
     <string name="pref_key_proximity_wake_up">pref_key_proximity_wake_up</string>
     <string name="pref_key_proximity_wake_up_timeout">pref_key_proximity_wake_up_timeout</string>
     <string name="pref_key_accessibility_service">pref_key_accessibility_service</string>
+    <string name="pref_key_color_filter">pref_key_color_filter</string>
+    <string name="pref_key_color_filter_color">pref_key_color_filter_color</string>
 
 
-    <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
-    <string name="pref_summary_accessibility_service">Enable this for Fx Service to work at all.</string>
-
-
-
+    <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app</string>
+    <string name="pref_summary_accessibility_service">Enable this for Fx Service to work at all</string>
     <string name="pref_title_accessibility_service">Accessibility service</string>
+    <string name="pref_summary_category_color_filter">Overlay to adjust screen brightness beyond system settings</string>
+    <string name="pref_summary_color_filter">Ctrl + Fn + O</string>
+    <string name="pref_summary_color_filter_color">Ctrl + Fn + Up or Down</string>
 
     <!-- Categories Titles -->
     <string name="pref_category_filters">Filters</string>
+    <string name="pref_category_color_filter">Color filter</string>
     <string name="pref_category_case_close">Case close</string>
     <string name="pref_category_proximity_sensor">Proximity sensor</string>
 
@@ -53,11 +56,17 @@
     <string name="pref_title_proximity_wake_up">Wake up screen</string>
     <string name="pref_title_proximity_wake_up_timeout">Wake up screen for n seconds</string>
 
+    <!-- Color filter -->
+    <string name="pref_title_color_filter">Enable color filter</string>
+    <string name="pref_title_color_filter_color">Color</string>
+
     <!-- Preferences: Filters -->
     <string name="pref_title_filter_open_case">Case open (Fn+F4)</string>
     <string name="pref_title_filter_close_case">Case close (Fn+F3)</string>
     <string name="pref_title_filter_open_keyboard">Keyboard open (Fn+F6)</string>
     <string name="pref_title_filter_close_keyboard">Keyboard close (Fn+F5)</string>
+
+
 
     <!-- Toast -->
     <string name="toast_screen_lock_abort">"Fx Service: Screen Lock Aborted"</string>

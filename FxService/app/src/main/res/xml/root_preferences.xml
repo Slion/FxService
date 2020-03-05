@@ -56,6 +56,33 @@
             />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/pref_category_color_filter"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_category_color_filter">
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_color_filter"
+            app:title="@string/pref_title_color_filter"
+            app:summary="@string/pref_summary_color_filter"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:key="@string/pref_key_color_filter_color"
+            android:title="@string/pref_title_color_filter_color"
+            app:summary="@string/pref_summary_color_filter_color"
+            android:defaultValue="@color/colorDefaultFilter"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_dialogType="preset"
+            app:cpv_colorShape="circle"
+            app:iconSpaceReserved="false"
+            />
+
+    </PreferenceCategory>
+
+
 
     <PreferenceCategory app:title="@string/pref_category_filters"
         app:summary="@string/pref_summary_filters"

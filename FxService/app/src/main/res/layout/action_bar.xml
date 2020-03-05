@@ -18,5 +18,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:alpha="0.5">
+
+    <!--
+    <Button
+        android:id="@+id/power"
+        android:text="Power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/volume_up"
+        android:text="Volume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/scroll"
+        android:text="Scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/swipe"
+        android:text="Swipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+-->
 </LinearLayout>

@@ -17,6 +17,8 @@ package net.slions.fxservice;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -24,11 +26,16 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.PowerManager;
 import androidx.annotation.RequiresApi;
+import androidx.core.graphics.ColorUtils;
 
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 public class FxService extends AccessibilityService
@@ -40,8 +47,10 @@ public class FxService extends AccessibilityService
     private SensorManager iSensorManager;
     // Proximity and light sensors, as retrieved from the sensor manager.
     private Sensor iSensorProximity;
-
+    // Last value read from the proximity sensor
     private float iLastProximityValue = 0;
+    //
+    FrameLayout mLayout;
 
     Handler iHandler = new Handler();
     Runnable iLockScreenCallback = new Runnable() {
@@ -56,21 +65,10 @@ public class FxService extends AccessibilityService
     protected void onServiceConnected() {
 
         super.onServiceConnected();
-        // Create an overlay and display the action bar
-        /*
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mLayout = new FrameLayout(this);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
-        lp.format = PixelFormat.TRANSLUCENT;
-        lp.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.TOP;
-        LayoutInflater inflater = LayoutInflater.from(this);
-        inflater.inflate(R.layout.action_bar, mLayout);
-        wm.addView(mLayout, lp);
-        */
+        // Create an overlay
+        setupColorFilter();
+
+
 
         setupProximitySensor();
 
@@ -92,6 +90,7 @@ public class FxService extends AccessibilityService
         Toast.makeText(this, R.string.toast_service_interrupted, Toast.LENGTH_SHORT).show();
     }
 
+    // Receive preference change notifications
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
@@ -100,8 +99,79 @@ public class FxService extends AccessibilityService
             // Setup proximity sensor anew
             setupProximitySensor();
         }
+        else if (key == getResources().getString(R.string.pref_key_color_filter_color))
+        {
+            // Overlay color was changed
+            setupColorFilter();
+        }
+        else if (key == getResources().getString(R.string.pref_key_color_filter))
+        {
+            // Overlay was turned on or off
+            setupColorFilter();
+        }
+
+
     }
 
+
+    private void setupColorFilter()
+    {
+
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+
+        if (getPrefBoolean(R.string.pref_key_color_filter,false) && mLayout == null)
+        {
+
+            mLayout = new FrameLayout(this);
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
+            //lp.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+            //lp.type = WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL;
+            lp.format = PixelFormat.TRANSLUCENT;
+            lp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+            lp.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            lp.flags |= WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+            lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_ATTACHED_IN_DECOR;
+            lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+            lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+            //lp.flags |= WindowManager.LayoutParams.FLAG_SECURE;
+
+
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.gravity = Gravity.TOP;
+
+            //LayoutInflater inflater = LayoutInflater.from(this);
+            //inflater.inflate(R.layout.action_bar, mLayout);
+
+            wm.addView(mLayout, lp);
+
+            //mLayout.getWindow().getDecorView();
+            // Hide the status bar.
+            //int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            //lp.setSystemUiVisibility(uiOptions);
+        }
+        else if (!getPrefBoolean(R.string.pref_key_color_filter,false) && mLayout != null)
+        {
+            // Disable our overlay
+            wm.removeView(mLayout);
+            mLayout = null;
+        }
+
+        // Set overlay color
+        if (mLayout!=null)
+        {
+            mLayout.setBackgroundColor(getPrefInt(R.string.pref_key_color_filter_color,0));
+        }
+
+    }
 
 
     private void setupProximitySensor()
@@ -126,8 +196,11 @@ public class FxService extends AccessibilityService
         iSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         // Get proximity sensor from the sensor manager.
         iSensorProximity = iSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if (iSensorProximity != null) {
-            iSensorManager.registerListener(this, iSensorProximity, SensorManager.SENSOR_DELAY_UI);
+        if (iSensorProximity != null)
+        {
+            // SensorManager.SENSOR_DELAY_UI
+            // Sampling period does not seem to be bringing anything
+            iSensorManager.registerListener(this, iSensorProximity, SensorManager.SENSOR_DELAY_FASTEST);
         }
 
     }
@@ -151,9 +224,42 @@ public class FxService extends AccessibilityService
 
         //Log.d("FxTec", event.toString());
 
+        // Hardcoded shortcut to turn overlay on and off
+        // That's notably intended to help people who shot themselves in the foot by using a solid color for instance
+        // Ctrl + Fn + O
+        if ((event.getMetaState() == (KeyEvent.META_CTRL_ON|KeyEvent.META_CTRL_LEFT_ON|KeyEvent.META_FUNCTION_ON))
+        // Ctrl + Fn + O with Fn and Alt swapped with Fx Qwerty keyboard layout
+        ||(event.getMetaState() == (KeyEvent.META_CTRL_ON|KeyEvent.META_CTRL_LEFT_ON|KeyEvent.META_ALT_ON|KeyEvent.META_ALT_LEFT_ON)))
+        {
+            if (action == KeyEvent.ACTION_UP)
+            {
+                if (keyCode == KeyEvent.KEYCODE_O)
+                {
+                    // Toggle color filter overlay
+                    setPrefBoolean(R.string.pref_key_color_filter,!getPrefBoolean(R.string.pref_key_color_filter,true));
+                }
+                else if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
+                {
+                    // Increase brightness
+                    int color = getPrefInt(R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
+                    int alpha = color >> 24 & 0x000000FF;
+                    color = ColorUtils.setAlphaComponent(color,Math.max(0,alpha-0x10));
+                    setPrefInt(R.string.pref_key_color_filter_color,color);
+                }
+                else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
+                {
+                    // Decrease brightness
+                    int color = getPrefInt(R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
+                    int alpha = color >> 24 & 0x000000FF;
+                    color = ColorUtils.setAlphaComponent(color,Math.min(alpha+0x10,255-0x10));
+                    setPrefInt(R.string.pref_key_color_filter_color,color);
+                }
+
+            }
+        }
+
         // Here we handle case and keyboard, open and close events
         // Ideally we should do that using sensors rather than intercepting key events.
-
         if (event.getMetaState() == KeyEvent.META_FUNCTION_ON)
         {
             if (keyCode == KeyEvent.KEYCODE_F3)
@@ -223,8 +329,16 @@ public class FxService extends AccessibilityService
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         return preferences.getBoolean(getResources().getString(aKey),aDefault);
-
     }
+
+    private void setPrefBoolean(int aKey, Boolean aValue)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(getString(aKey), aValue);
+        editor.commit();
+    }
+
 
     // Fetch specified integer preference
     private int getPrefInt(int aKey, int aDefault)
@@ -233,6 +347,15 @@ public class FxService extends AccessibilityService
         return preferences.getInt(getResources().getString(aKey),aDefault);
 
     }
+
+    private void setPrefInt(int aKey, int aValue)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(getString(aKey), aValue);
+        editor.commit();
+    }
+
 
 
     private void turnOnScreen(int aTimeout) {

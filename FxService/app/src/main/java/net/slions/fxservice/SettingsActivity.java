@@ -86,12 +86,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostResume() {
+    protected void onPostResume()
+    {
         super.onPostResume();
-
+        // Set accessibility service preference according to our accessibility service status
         SwitchPreferenceCompat pref = (SwitchPreferenceCompat) iSettingsFragment.findPreference(getResources().getString(R.string.pref_key_accessibility_service));
         pref.setChecked(isAccessServiceEnabled(this,FxService.class));
-
     }
 
     // To check if an accessibility service is enabled
@@ -102,9 +102,12 @@ public class SettingsActivity extends AppCompatActivity {
         return prefString!= null && prefString.contains(context.getPackageName() + "/" + accessibilityServiceClass.getName());
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    // Boilerplate code to load our preferences from XML
+    public static class SettingsFragment extends PreferenceFragmentCompat
+    {
         @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
+        {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
     }
