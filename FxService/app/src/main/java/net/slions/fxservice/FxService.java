@@ -115,7 +115,11 @@ public class FxService extends AccessibilityService
 
     }
 
-
+    // Setting up the overlay to draw on top of status bar and navigation bar can be tricky
+    // See: https://stackoverflow.com/questions/21380167/draw-bitmaps-on-top-of-the-navigation-bar-in-android
+    // See: https://stackoverflow.com/questions/31516089/draw-over-navigation-bar-and-other-apps-on-android-version-5
+    // See: https://stackoverflow.com/questions/50677833/full-screen-type-accessibility-overlay
+    //
     private void setupColorFilter()
     {
 
@@ -131,47 +135,31 @@ public class FxService extends AccessibilityService
             Point size = new Point();
             display.getSize(size);
             // We need it to be large enough to cover navigation bar both in portrait and landscape
+            // Doing Math.max here didn't work for whatever reason
             int width = size.x+500;
             int height = size.y+500;
 
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams(); //(width, height,-200,-200,WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,0,PixelFormat.TRANSLUCENT);
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             // We need to explicitly specify our extent so as to make sure we cover the navigation bar
-            lp.width=width;
-            lp.height=height;
+            lp.width=Math.max(width,height);
+            lp.height=Math.max(width,height);
 
             lp.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
-            //lp.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-            //lp.type = WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL;
             lp.format = PixelFormat.TRANSLUCENT;
+
             lp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
             lp.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
             lp.flags |= WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+            lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_ATTACHED_IN_DECOR;
             lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
             lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            //lp.flags |= WindowManager.LayoutParams.FLAG_SECURE;
-
-
-            //lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            //lp.height = WindowManager.LayoutParams.MATCH_PARENT;
             lp.gravity = Gravity.TOP;
 
             //LayoutInflater inflater = LayoutInflater.from(this);
             //inflater.inflate(R.layout.action_bar, mLayout);
 
             wm.addView(mLayout, lp);
-
-            //mLayout.getWindow().getDecorView();
-            // Hide the status bar.
-            //int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            //lp.setSystemUiVisibility(uiOptions);
         }
         else if (!getPrefBoolean(R.string.pref_key_color_filter,false) && mLayout != null)
         {
