@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -30,6 +31,7 @@ import androidx.core.graphics.ColorUtils;
 
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
@@ -123,7 +125,20 @@ public class FxService extends AccessibilityService
         {
 
             mLayout = new FrameLayout(this);
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+
+            // Fetch screen size to work out our overlay size
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            // We need it to be large enough to cover navigation bar both in portrait and landscape
+            int width = size.x+500;
+            int height = size.y+500;
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams(); //(width, height,-200,-200,WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,0,PixelFormat.TRANSLUCENT);
+            // We need to explicitly specify our extent so as to make sure we cover the navigation bar
+            lp.width=width;
+            lp.height=height;
+
             lp.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
             //lp.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
             //lp.type = WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL;
@@ -144,8 +159,8 @@ public class FxService extends AccessibilityService
             //lp.flags |= WindowManager.LayoutParams.FLAG_SECURE;
 
 
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+            //lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            //lp.height = WindowManager.LayoutParams.MATCH_PARENT;
             lp.gravity = Gravity.TOP;
 
             //LayoutInflater inflater = LayoutInflater.from(this);
