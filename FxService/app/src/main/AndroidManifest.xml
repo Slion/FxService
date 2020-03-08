@@ -40,9 +40,9 @@
 
         <!--quick settings tile service-->
         <service
-            android:name=".FxTileService"
+            android:name=".AdaptiveBrightnessTileService"
             android:icon="@drawable/ic_brightness_auto_white_24dp"
-            android:label="@string/tile_service_name"
+            android:label="@string/tile_service_name_adaptive_brightness"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />

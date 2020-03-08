@@ -12,7 +12,7 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog.Builder;
 
 
-public class FxTileService extends TileService {
+public class AdaptiveBrightnessTileService extends TileService {
 
     private static final int PERMISSION_DIALOG = 42;
     private static final int SETTING_NOT_FOUND_DIALOG = 24;
@@ -84,7 +84,7 @@ public class FxTileService extends TileService {
         if (this.getQsTile() != null)
         {
             Tile tile = this.getQsTile();
-            tile.setLabel(getString(R.string.auto_brightness));
+            tile.setLabel(getString(R.string.tile_service_name_adaptive_brightness));
             try
             {
                 if (Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC)
