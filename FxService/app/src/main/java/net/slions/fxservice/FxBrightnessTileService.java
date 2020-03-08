@@ -76,47 +76,17 @@ public class FxBrightnessTileService extends TileService {
         {
             Tile tile = this.getQsTile();
             tile.setLabel(getString(R.string.tile_service_name_fx_brightness));
+            tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_fx_brightness));
             if (FxSettings.isColorFilterEnabled(this))
             {
-                tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_brightness_auto_white_24dp));
                 tile.setState(Tile.STATE_ACTIVE);
             }
             else
             {
-                tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_brightness_auto_off_white_24dp));
                 tile.setState(Tile.STATE_INACTIVE);
             }
 
             tile.updateTile();
         }
-    }
-
-    private void showDialog(int whichDialog)
-    {
-        Builder builder = new Builder(this, R.style.AppTheme_AlertDialog);
-        builder.setCancelable(true)
-                .setIcon(R.drawable.ic_brightness_auto_white_24dp)
-                .setTitle(R.string.app_name)
-                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
-
-        switch (whichDialog)
-        {
-            case PERMISSION_DIALOG:
-                builder.setMessage(R.string.permission_alert_dialog_message);
-                builder.setPositiveButton(R.string.settings, (dialog, which) ->
-                        // Launch system UI to manage "write settings" permission for this application
-                        startActivityAndCollapse(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                .setData(Uri.parse("package:" + getPackageName())))
-                        );
-                //startActivityAndCollapse(new Intent(getApplicationContext(), SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK))
-
-                break;
-            case SETTING_NOT_FOUND_DIALOG:
-                builder.setMessage(R.string.setting_not_found_alert_dialog_message);
-                builder.setPositiveButton(R.string.ok, (dialog, which) -> dialog.cancel());
-                break;
-        }
-        showDialog(builder.create());
     }
 }
