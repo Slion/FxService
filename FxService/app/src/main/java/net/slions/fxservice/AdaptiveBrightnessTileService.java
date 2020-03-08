@@ -85,22 +85,21 @@ public class AdaptiveBrightnessTileService extends TileService {
         {
             Tile tile = this.getQsTile();
             tile.setLabel(getString(R.string.tile_service_name_adaptive_brightness));
+            tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_adaptive_brightness));
             try
             {
                 if (Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC)
                 {
-                    tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_brightness_auto_white_24dp));
                     tile.setState(Tile.STATE_ACTIVE);
                 }
                 else
                 {
-                    tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_brightness_auto_off_white_24dp));
                     tile.setState(Tile.STATE_INACTIVE);
                 }
             }
             catch (Settings.SettingNotFoundException e)
             {
-                tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_brightness_auto_white_24dp));
+                tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_adaptive_brightness));
                 tile.setState(Tile.STATE_INACTIVE);
             }
             tile.updateTile();
@@ -127,7 +126,7 @@ public class AdaptiveBrightnessTileService extends TileService {
     {
         Builder builder = new Builder(this, R.style.AppTheme_AlertDialog);
         builder.setCancelable(true)
-                .setIcon(R.drawable.ic_brightness_auto_white_24dp)
+                .setIcon(R.drawable.ic_adaptive_brightness)
                 .setTitle(R.string.app_name)
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
 
