@@ -38,7 +38,7 @@
                 android:resource="@xml/fxservice" />
         </service>
 
-        <!--quick settings tile service-->
+        <!--quick settings adaptive brightness tile service-->
         <service
             android:name=".AdaptiveBrightnessTileService"
             android:icon="@drawable/ic_brightness_auto_white_24dp"
@@ -55,6 +55,22 @@
                 android:value="false" />
         </service>
 
+        <!--quick settings fx brightness tile service-->
+        <service
+            android:name=".FxBrightnessTileService"
+            android:icon="@drawable/ic_brightness_auto_white_24dp"
+            android:label="@string/tile_service_name_fx_brightness"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <!--use ACTIVE_TILE to self-update the quick settings tile.
+            make use of the job service-->
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false" />
+        </service>
 
     </application>
 

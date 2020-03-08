@@ -17,7 +17,7 @@
 <resources>
     <string name="title_activity_main">Fx Service</string>
     <string name="tile_service_name_adaptive_brightness">Adaptive Brightness</string>
-
+    <string name="tile_service_name_fx_brightness">Fx Brightness</string>
 
     <!-- Tile Service-->
     <string name="app_name">Fx Service</string>

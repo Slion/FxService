@@ -125,9 +125,8 @@ public class FxService extends AccessibilityService
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        if (getPrefBoolean(R.string.pref_key_color_filter,false) && mLayout == null)
+        if (FxSettings.getPrefBoolean(this, R.string.pref_key_color_filter,false) && mLayout == null)
         {
-
             mLayout = new FrameLayout(this);
 
             // Fetch screen size to work out our overlay size
@@ -161,7 +160,7 @@ public class FxService extends AccessibilityService
 
             wm.addView(mLayout, lp);
         }
-        else if (!getPrefBoolean(R.string.pref_key_color_filter,false) && mLayout != null)
+        else if (!FxSettings.getPrefBoolean(this, R.string.pref_key_color_filter,false) && mLayout != null)
         {
             // Disable our overlay
             wm.removeView(mLayout);
@@ -171,7 +170,7 @@ public class FxService extends AccessibilityService
         // Set overlay color
         if (mLayout!=null)
         {
-            mLayout.setBackgroundColor(getPrefInt(R.string.pref_key_color_filter_color,0));
+            mLayout.setBackgroundColor(FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color,0));
         }
 
     }
@@ -180,7 +179,7 @@ public class FxService extends AccessibilityService
     private void setupProximitySensor()
     {
         // Open proximity sensor if needed
-        if (getPrefBoolean(R.string.pref_key_proximity_wake_up,true))
+        if (FxSettings.getPrefBoolean(this,R.string.pref_key_proximity_wake_up,true))
         {
             Toast.makeText(this, R.string.toast_proximity_sensor_enabled, Toast.LENGTH_SHORT).show();
             openProximitySensor();
@@ -239,23 +238,23 @@ public class FxService extends AccessibilityService
                 if (keyCode == KeyEvent.KEYCODE_O)
                 {
                     // Toggle color filter overlay
-                    setPrefBoolean(R.string.pref_key_color_filter,!getPrefBoolean(R.string.pref_key_color_filter,true));
+                    FxSettings.toggleColorFilter(this);
                 }
                 else if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
                 {
                     // Increase brightness
-                    int color = getPrefInt(R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
+                    int color = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
                     int alpha = color >> 24 & 0x000000FF;
                     color = ColorUtils.setAlphaComponent(color,Math.max(0,alpha-0x10));
-                    setPrefInt(R.string.pref_key_color_filter_color,color);
+                    FxSettings.setPrefInt(this, R.string.pref_key_color_filter_color,color);
                 }
                 else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
                 {
                     // Decrease brightness
-                    int color = getPrefInt(R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
+                    int color = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
                     int alpha = color >> 24 & 0x000000FF;
                     color = ColorUtils.setAlphaComponent(color,Math.min(alpha+0x10,255-0x10));
-                    setPrefInt(R.string.pref_key_color_filter_color,color);
+                    FxSettings.setPrefInt(this,R.string.pref_key_color_filter_color,color);
                 }
 
             }
@@ -272,15 +271,15 @@ public class FxService extends AccessibilityService
                 {
                     // Only perform action on key up
                     // Check if user want us to lock screen when closing her case
-                    if (getPrefBoolean(R.string.pref_key_case_close_lock_screen,true))
+                    if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
                     {
-                        iHandler.postDelayed(iLockScreenCallback, getPrefInt(R.string.pref_key_case_close_delay,0) * 1000);
+                        iHandler.postDelayed(iLockScreenCallback, FxSettings.getPrefInt(this, R.string.pref_key_case_close_delay,0) * 1000);
                     }
                 }
 
                 // Consume both up and down events to prevent the system doing anything with those
                 // That notably prevents the trigger of search F3 in chrome browser
-                return getPrefBoolean(R.string.pref_key_filter_close_case,true);
+                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_case,true);
             }
             else if (keyCode == KeyEvent.KEYCODE_F4)
             {
@@ -293,27 +292,27 @@ public class FxService extends AccessibilityService
                     iHandler.removeCallbacks(iLockScreenCallback);
 
                     // Only show message if lock was requested
-                    if (getPrefBoolean(R.string.pref_key_case_close_lock_screen,true))
+                    if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
                     {
                         Toast.makeText(this, R.string.toast_screen_lock_abort, Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 // Consume both up and down events to prevent the system doing anything with those
-                return getPrefBoolean(R.string.pref_key_filter_open_case,true);
+                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_case,true);
             }
             else if (keyCode == KeyEvent.KEYCODE_F5)
             {
                 // Keyboard closed
                 // Consume both up and down events to prevent the system doing anything with those
                 // Fix issue with browser page reload when closing keyboard
-                return getPrefBoolean(R.string.pref_key_filter_close_keyboard,true);
+                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_keyboard,true);
             }
             else if (keyCode == KeyEvent.KEYCODE_F6)
             {
                 // Keyboard opened
                 // Consume both up and down events to prevent the system doing anything with those
-                return getPrefBoolean(R.string.pref_key_filter_open_keyboard,true);
+                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_keyboard,true);
             }
 
 
@@ -325,38 +324,6 @@ public class FxService extends AccessibilityService
         //return false;
         return super.onKeyEvent(event);
 
-    }
-
-    // Fetch specified boolean preference
-    private boolean getPrefBoolean(int aKey, Boolean aDefault)
-    {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return preferences.getBoolean(getResources().getString(aKey),aDefault);
-    }
-
-    private void setPrefBoolean(int aKey, Boolean aValue)
-    {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(getString(aKey), aValue);
-        editor.commit();
-    }
-
-
-    // Fetch specified integer preference
-    private int getPrefInt(int aKey, int aDefault)
-    {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return preferences.getInt(getResources().getString(aKey),aDefault);
-
-    }
-
-    private void setPrefInt(int aKey, int aValue)
-    {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(getString(aKey), aValue);
-        editor.commit();
     }
 
 
@@ -395,7 +362,7 @@ public class FxService extends AccessibilityService
                     // To be safe just cancel possible callbacks
                     iHandler.removeCallbacks(iLockScreenCallback);
                     //
-                    turnOnScreen(getPrefInt(R.string.pref_key_proximity_wake_up_timeout,5) * 1000);
+                    turnOnScreen(FxSettings.getPrefInt(this,R.string.pref_key_proximity_wake_up_timeout,5) * 1000);
                 }
 
                 iLastProximityValue = currentValue;
