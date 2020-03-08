@@ -51,6 +51,7 @@
     <string name="pref_key_accessibility_service">pref_key_accessibility_service</string>
     <string name="pref_key_color_filter">pref_key_color_filter</string>
     <string name="pref_key_color_filter_color">pref_key_color_filter_color</string>
+    <string name="pref_key_color_filter_brightness">pref_key_color_filter_brightness</string>
 
 
     <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app</string>
@@ -77,6 +78,7 @@
     <!-- Color filter -->
     <string name="pref_title_color_filter">Enable color filter</string>
     <string name="pref_title_color_filter_color">Color</string>
+    <string name="pref_title_color_filter_brightness">Brightness</string>
 
     <!-- Preferences: Filters -->
     <string name="pref_title_filter_open_case">Case open (Fn+F4)</string>

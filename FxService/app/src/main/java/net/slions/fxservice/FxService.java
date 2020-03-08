@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
@@ -53,6 +54,7 @@ public class FxService extends AccessibilityService
     private float iLastProximityValue = 0;
     //
     FrameLayout mLayout;
+    //View mColorLayout;
 
     Handler iHandler = new Handler();
     Runnable iLockScreenCallback = new Runnable() {
@@ -101,7 +103,7 @@ public class FxService extends AccessibilityService
             // Setup proximity sensor anew
             setupProximitySensor();
         }
-        else if (key == getResources().getString(R.string.pref_key_color_filter_color))
+        else if (key == getResources().getString(R.string.pref_key_color_filter_color) || key == getResources().getString(R.string.pref_key_color_filter_brightness))
         {
             // Overlay color was changed
             setupColorFilter();
@@ -156,7 +158,7 @@ public class FxService extends AccessibilityService
             lp.gravity = Gravity.TOP;
 
             //LayoutInflater inflater = LayoutInflater.from(this);
-            //inflater.inflate(R.layout.action_bar, mLayout);
+            //mColorLayout = inflater.inflate(R.layout.action_bar, mLayout);
 
             wm.addView(mLayout, lp);
         }
@@ -165,12 +167,17 @@ public class FxService extends AccessibilityService
             // Disable our overlay
             wm.removeView(mLayout);
             mLayout = null;
+            //mColorLayout = null;
         }
 
         // Set overlay color
         if (mLayout!=null)
         {
-            mLayout.setBackgroundColor(FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color,0));
+            int brightness = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_brightness,0);
+            // Just keep alpha
+            int color = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color,0);
+            int blackAlpha = ColorUtils.setAlphaComponent(0,0xFF - brightness);
+            mLayout.setBackgroundColor(ColorUtils.compositeColors(blackAlpha,color));
         }
 
     }
@@ -243,18 +250,17 @@ public class FxService extends AccessibilityService
                 else if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
                 {
                     // Increase brightness
-                    int color = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
-                    int alpha = color >> 24 & 0x000000FF;
-                    color = ColorUtils.setAlphaComponent(color,Math.max(0,alpha-0x10));
-                    FxSettings.setPrefInt(this, R.string.pref_key_color_filter_color,color);
+                    int brightness = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_brightness, 150);
+                    brightness = Math.min(brightness+0x10,255);
+                    FxSettings.setPrefInt(this,R.string.pref_key_color_filter_brightness,brightness);
+
                 }
                 else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
                 {
                     // Decrease brightness
-                    int color = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color, getColor(R.color.colorDefaultFilter));
-                    int alpha = color >> 24 & 0x000000FF;
-                    color = ColorUtils.setAlphaComponent(color,Math.min(alpha+0x10,255-0x10));
-                    FxSettings.setPrefInt(this,R.string.pref_key_color_filter_color,color);
+                    int brightness = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_brightness, 150);
+                    brightness = Math.max(25,brightness-0x10);
+                    FxSettings.setPrefInt(this, R.string.pref_key_color_filter_brightness,brightness);
                 }
 
             }
