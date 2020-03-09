@@ -54,16 +54,18 @@
     <string name="pref_key_color_filter_brightness">pref_key_color_filter_brightness</string>
 
 
-    <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app</string>
+    <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
     <string name="pref_summary_accessibility_service">Enable this for Fx Service to work at all</string>
     <string name="pref_title_accessibility_service">Accessibility service</string>
-    <string name="pref_summary_category_color_filter">Overlay to adjust screen brightness beyond system settings</string>
-    <string name="pref_summary_color_filter">Ctrl + Fn + O</string>
-    <string name="pref_summary_color_filter_color">Ctrl + Fn + Up or Down</string>
+    <string name="pref_summary_category_screen_filter">Overlay to adjust screen brightness beyond system settings.</string>
+    <string name="pref_summary_screen_filter">Ctrl + Fn + O</string>
+    <string name="pref_summary_screen_filter_color">Ctrl + Fn + Up or Down</string>
+    <string name="pref_summary_case_close">Screen will go off as soon as you close your case and your device will be locked after the specified timeout.</string>
+    <string name="pref_summary_proximity_sensor">Screen will turn on as soon as you open your case.</string>
 
     <!-- Categories Titles -->
     <string name="pref_category_filters">Filters</string>
-    <string name="pref_category_color_filter">Color filter</string>
+    <string name="pref_category_screen_filter">Screen filter</string>
     <string name="pref_category_case_close">Case close</string>
     <string name="pref_category_proximity_sensor">Proximity sensor</string>
 
@@ -75,10 +77,10 @@
     <string name="pref_title_proximity_wake_up">Wake up screen</string>
     <string name="pref_title_proximity_wake_up_timeout">Wake up screen for n seconds</string>
 
-    <!-- Color filter -->
-    <string name="pref_title_color_filter">Enable color filter</string>
-    <string name="pref_title_color_filter_color">Color</string>
-    <string name="pref_title_color_filter_brightness">Brightness</string>
+    <!-- Preferences: Screen filter -->
+    <string name="pref_title_screen_filter">Enable screen filter</string>
+    <string name="pref_title_screen_filter_color">Colour</string>
+    <string name="pref_title_screen_filter_brightness">Brightness</string>
 
     <!-- Preferences: Filters -->
     <string name="pref_title_filter_open_case">Case open (Fn+F4)</string>

@@ -10,9 +10,48 @@
         app:iconSpaceReserved="false"
         />
 
-    <PreferenceCategory app:title="@string/pref_category_case_close"
+    <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_screen_filter"
         app:iconSpaceReserved="false"
-        app:dependency="@string/pref_key_accessibility_service">
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_category_screen_filter"
+        >
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_color_filter"
+            app:title="@string/pref_title_screen_filter"
+            app:summary="@string/pref_summary_screen_filter"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:key="@string/pref_key_color_filter_color"
+            android:title="@string/pref_title_screen_filter_color"
+            android:defaultValue="@color/colorDefaultFilter"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_dialogType="preset"
+            app:cpv_colorShape="circle"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:key="@string/pref_key_color_filter_brightness"
+            app:title="@string/pref_title_screen_filter_brightness"
+            app:summary="@string/pref_summary_screen_filter_color"
+            app:defaultValue="150"
+            app:min="25"
+            android:max="255"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            app:updatesContinuously="true"
+            />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+    <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_case_close"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_case_close">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_case_close_lock_screen"
@@ -31,11 +70,13 @@
             app:showSeekBarValue="true"
             app:iconSpaceReserved="false"
             />
-    </PreferenceCategory>
+    </net.slions.fxservice.FxPreferenceCategory>
 
-    <PreferenceCategory app:title="@string/pref_category_proximity_sensor"
+    <net.slions.fxservice.FxPreferenceCategory
+        app:title="@string/pref_category_proximity_sensor"
         app:iconSpaceReserved="false"
-        app:dependency="@string/pref_key_accessibility_service">
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_proximity_sensor">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_proximity_wake_up"
@@ -54,48 +95,10 @@
             app:showSeekBarValue="true"
             app:iconSpaceReserved="false"
             />
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/pref_category_color_filter"
-        app:iconSpaceReserved="false"
-        app:dependency="@string/pref_key_accessibility_service"
-        app:summary="@string/pref_summary_category_color_filter">
-
-        <SwitchPreferenceCompat
-            app:key="@string/pref_key_color_filter"
-            app:title="@string/pref_title_color_filter"
-            app:summary="@string/pref_summary_color_filter"
-            app:defaultValue="false"
-            app:iconSpaceReserved="false"
-            />
-
-        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
-            android:key="@string/pref_key_color_filter_color"
-            android:title="@string/pref_title_color_filter_color"
-            android:defaultValue="@color/colorDefaultFilter"
-            app:cpv_showAlphaSlider="true"
-            app:cpv_dialogType="preset"
-            app:cpv_colorShape="circle"
-            app:iconSpaceReserved="false"
-            />
-
-        <SeekBarPreference
-            app:key="@string/pref_key_color_filter_brightness"
-            app:title="@string/pref_title_color_filter_brightness"
-            app:summary="@string/pref_summary_color_filter_color"
-            app:defaultValue="150"
-            app:min="25"
-            android:max="255"
-            app:showSeekBarValue="true"
-            app:iconSpaceReserved="false"
-            app:updatesContinuously="true"
-            />
-
-    </PreferenceCategory>
+    </net.slions.fxservice.FxPreferenceCategory>
 
 
-
-    <PreferenceCategory app:title="@string/pref_category_filters"
+    <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_filters"
         app:summary="@string/pref_summary_filters"
         app:iconSpaceReserved="false"
         app:dependency="@string/pref_key_accessibility_service">
@@ -128,7 +131,7 @@
             app:iconSpaceReserved="false"
             />
 
-    </PreferenceCategory>
+    </net.slions.fxservice.FxPreferenceCategory>
 
 <!--
     <PreferenceCategory app:title="@string/messages_header">
