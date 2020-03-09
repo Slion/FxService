@@ -7,14 +7,14 @@ import android.preference.PreferenceManager;
 public class FxSettings
 {
 
-    static void toggleColorFilter(Context aContext)
+    static void toggleScreenFilter(Context aContext)
     {
-        setPrefBoolean(aContext, R.string.pref_key_color_filter,!getPrefBoolean(aContext,R.string.pref_key_color_filter,true));
+        setPrefBoolean(aContext, R.string.pref_key_screen_filter,!getPrefBoolean(aContext,R.string.pref_key_screen_filter,true));
     }
 
     static boolean isColorFilterEnabled(Context aContext)
     {
-        return getPrefBoolean(aContext,R.string.pref_key_color_filter,false);
+        return getPrefBoolean(aContext,R.string.pref_key_screen_filter,false);
     }
 
     // Fetch specified boolean preference

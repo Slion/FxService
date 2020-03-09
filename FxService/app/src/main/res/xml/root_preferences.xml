@@ -17,7 +17,7 @@
         >
 
         <SwitchPreferenceCompat
-            app:key="@string/pref_key_color_filter"
+            app:key="@string/pref_key_screen_filter"
             app:title="@string/pref_title_screen_filter"
             app:summary="@string/pref_summary_screen_filter"
             app:defaultValue="false"
@@ -25,7 +25,7 @@
             />
 
         <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
-            android:key="@string/pref_key_color_filter_color"
+            android:key="@string/pref_key_screen_filter_color"
             android:title="@string/pref_title_screen_filter_color"
             android:defaultValue="@color/colorDefaultFilter"
             app:cpv_showAlphaSlider="true"
@@ -35,7 +35,7 @@
             />
 
         <SeekBarPreference
-            app:key="@string/pref_key_color_filter_brightness"
+            app:key="@string/pref_key_screen_filter_brightness"
             app:title="@string/pref_title_screen_filter_brightness"
             app:summary="@string/pref_summary_screen_filter_color"
             app:defaultValue="150"

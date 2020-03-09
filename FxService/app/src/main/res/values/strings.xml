@@ -49,9 +49,9 @@
     <string name="pref_key_proximity_wake_up">pref_key_proximity_wake_up</string>
     <string name="pref_key_proximity_wake_up_timeout">pref_key_proximity_wake_up_timeout</string>
     <string name="pref_key_accessibility_service">pref_key_accessibility_service</string>
-    <string name="pref_key_color_filter">pref_key_color_filter</string>
-    <string name="pref_key_color_filter_color">pref_key_color_filter_color</string>
-    <string name="pref_key_color_filter_brightness">pref_key_color_filter_brightness</string>
+    <string name="pref_key_screen_filter">pref_key_screen_filter</string>
+    <string name="pref_key_screen_filter_color">pref_key_screen_filter_color</string>
+    <string name="pref_key_screen_filter_brightness">pref_key_screen_filter_brightness</string>
 
 
     <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>

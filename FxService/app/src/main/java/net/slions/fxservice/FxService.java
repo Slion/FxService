@@ -17,7 +17,6 @@ package net.slions.fxservice;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -26,15 +25,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.PowerManager;
-import androidx.annotation.RequiresApi;
+
 import androidx.core.graphics.ColorUtils;
 
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
@@ -56,6 +54,12 @@ public class FxService extends AccessibilityService
     private float iLastProximityValue = 0;
     // Used to turn the screen off as soon as you close the case without locking the screen
     private PowerManager.WakeLock iWakeLockProximityScreenOff = null;
+    // The minimum brightness on F(x)tec Pro1 is 10
+    private final int KFxTecProOneBrightnessMin = 10;
+    private final int KFxTecProOneBrightnessMax = 255;
+    private final int KScreenFilterBrightnessMin = 25;
+    private final int KScreenFilterBrightnessMax = 255;
+
 
     //
     FrameLayout mLayout;
@@ -130,18 +134,22 @@ public class FxService extends AccessibilityService
             // Setup proximity sensor anew
             setupProximitySensor();
         }
-        else if (key == getResources().getString(R.string.pref_key_color_filter_color) || key == getResources().getString(R.string.pref_key_color_filter_brightness))
+        else if (key == getResources().getString(R.string.pref_key_screen_filter_color) || key == getResources().getString(R.string.pref_key_screen_filter_brightness))
         {
             // Overlay color was changed
             setupColorFilter();
         }
-        else if (key == getResources().getString(R.string.pref_key_color_filter))
+        else if (key == getResources().getString(R.string.pref_key_screen_filter))
         {
             // Overlay was turned on or off
             setupColorFilter();
         }
+    }
 
 
+    private boolean isScreenFilterEnabled()
+    {
+        return FxSettings.getPrefBoolean(this, R.string.pref_key_screen_filter,false);
     }
 
     // Setting up the overlay to draw on top of status bar and navigation bar can be tricky
@@ -154,7 +162,7 @@ public class FxService extends AccessibilityService
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        if (FxSettings.getPrefBoolean(this, R.string.pref_key_color_filter,false) && mLayout == null)
+        if (isScreenFilterEnabled() && mLayout == null)
         {
             mLayout = new FrameLayout(this);
 
@@ -189,7 +197,7 @@ public class FxService extends AccessibilityService
 
             wm.addView(mLayout, lp);
         }
-        else if (!FxSettings.getPrefBoolean(this, R.string.pref_key_color_filter,false) && mLayout != null)
+        else if (!isScreenFilterEnabled() && mLayout != null)
         {
             // Disable our overlay
             wm.removeView(mLayout);
@@ -200,9 +208,9 @@ public class FxService extends AccessibilityService
         // Set overlay color
         if (mLayout!=null)
         {
-            int brightness = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_brightness,0);
+            int brightness = FxSettings.getPrefInt(this, R.string.pref_key_screen_filter_brightness,0);
             // Just keep alpha
-            int color = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_color,0);
+            int color = FxSettings.getPrefInt(this, R.string.pref_key_screen_filter_color,0);
             int blackAlpha = ColorUtils.setAlphaComponent(0,0xFF - brightness);
             mLayout.setBackgroundColor(ColorUtils.compositeColors(blackAlpha,color));
         }
@@ -253,6 +261,60 @@ public class FxService extends AccessibilityService
     }
 
 
+    private boolean isScreenFilterBrightnessMaxed()
+    {
+        return KScreenFilterBrightnessMax == getScreenFilterBrightness();
+    }
+
+    private int getScreenFilterBrightness()
+    {
+        return FxSettings.getPrefInt(this, R.string.pref_key_screen_filter_brightness, 150);
+    }
+
+    private int getSystemBrightness()
+    {
+        int brightness = 0;
+        try
+        {
+            brightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+        }
+        catch (Settings.SettingNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return brightness;
+    }
+
+    private void increaseFxScreenBrightness()
+    {
+        if (isScreenFilterEnabled())
+        {
+            // Increase brightness
+            int brightness = getScreenFilterBrightness();
+            brightness = Math.min(brightness+0x10,255);
+            FxSettings.setPrefInt(this,R.string.pref_key_screen_filter_brightness,brightness);
+        }
+    }
+
+
+    private void decreaseFxScreenBrightness()
+    {
+        if (isScreenFilterEnabled())
+        {
+            // Decrease brightness
+            int brightness = getScreenFilterBrightness();
+            brightness = Math.max(25,brightness-0x10);
+            FxSettings.setPrefInt(this, R.string.pref_key_screen_filter_brightness,brightness);
+        }
+    }
+
+
+    private void logBrightness()
+    {
+        System.out.println("Brightness sys/fx:  " + getSystemBrightness() + "/" + getScreenFilterBrightness());
+    }
+
     @Override
     public boolean onKeyEvent(KeyEvent event) {
         int action = event.getAction();
@@ -272,25 +334,48 @@ public class FxService extends AccessibilityService
                 if (keyCode == KeyEvent.KEYCODE_O)
                 {
                     // Toggle color filter overlay
-                    FxSettings.toggleColorFilter(this);
+                    FxSettings.toggleScreenFilter(this);
                 }
                 else if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
                 {
-                    // Increase brightness
-                    int brightness = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_brightness, 150);
-                    brightness = Math.min(brightness+0x10,255);
-                    FxSettings.setPrefInt(this,R.string.pref_key_color_filter_brightness,brightness);
-
+                    increaseFxScreenBrightness();
                 }
                 else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
                 {
-                    // Decrease brightness
-                    int brightness = FxSettings.getPrefInt(this, R.string.pref_key_color_filter_brightness, 150);
-                    brightness = Math.max(25,brightness-0x10);
-                    FxSettings.setPrefInt(this, R.string.pref_key_color_filter_brightness,brightness);
+                    decreaseFxScreenBrightness();
                 }
-
             }
+        }
+
+        if (event.getKeyCode()==KeyEvent.KEYCODE_BRIGHTNESS_UP)
+        {
+            // Do not transmit event to system if currently using screen filter
+            boolean swallowEvent = isScreenFilterEnabled() && !isScreenFilterBrightnessMaxed();
+
+            if (action == KeyEvent.ACTION_UP)
+            {
+                increaseFxScreenBrightness();
+            }
+
+            //logBrightness();
+            return swallowEvent;
+        }
+        else if (event.getKeyCode()==KeyEvent.KEYCODE_BRIGHTNESS_DOWN)
+        {
+            boolean swallowEvent = isScreenFilterEnabled() && getSystemBrightness() == KFxTecProOneBrightnessMin;
+            // Had to be done on down action to check system brightness before the system modifies it
+            if (action == KeyEvent.ACTION_DOWN)
+            {
+                int brightness = getSystemBrightness();
+                // Decreased screen filter brightness if system brightness is already at minimum
+                if (brightness == KFxTecProOneBrightnessMin)
+                {
+                    decreaseFxScreenBrightness();
+                }
+            }
+
+            //logBrightness();
+            return swallowEvent;
         }
 
         // Here we handle case and keyboard, open and close events
@@ -328,8 +413,6 @@ public class FxService extends AccessibilityService
                     // To be safe just cancel possible callbacks
                     iHandler.removeCallbacks(iLockScreenCallback);
                     releaseProximityWakeLock();
-
-
 
                     // Only show message if lock was requested
                     if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))

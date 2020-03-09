@@ -1,15 +1,10 @@
 package net.slions.fxservice;
 
 import android.content.ComponentName;
-import android.content.Intent;
 import android.graphics.drawable.Icon;
-import android.net.Uri;
-import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.util.Log;
-
-import androidx.appcompat.app.AlertDialog.Builder;
 
 
 public class FxBrightnessTileService extends TileService {
@@ -65,7 +60,7 @@ public class FxBrightnessTileService extends TileService {
     public void onClick()
     {
         Log.i(TAG, "onClick");
-        FxSettings.toggleColorFilter(this);
+        FxSettings.toggleScreenFilter(this);
         updateTileResources();
         super.onClick();
     }
