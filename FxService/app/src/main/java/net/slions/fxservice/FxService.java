@@ -41,6 +41,8 @@ import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
+
 public class FxService extends AccessibilityService
         implements SensorEventListener,
          SharedPreferences.OnSharedPreferenceChangeListener
@@ -52,27 +54,37 @@ public class FxService extends AccessibilityService
     private Sensor iSensorProximity;
     // Last value read from the proximity sensor
     private float iLastProximityValue = 0;
+    // Used to turn the screen off as soon as you close the case without locking the screen
+    private PowerManager.WakeLock iWakeLockProximityScreenOff = null;
+
     //
     FrameLayout mLayout;
     //View mColorLayout;
 
     Handler iHandler = new Handler();
-    Runnable iLockScreenCallback = new Runnable() {
+    Runnable iLockScreenCallback = new Runnable()
+    {
         @Override
-        public void run() {
+        public void run()
+        {
             //Do something after 100ms
             performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
+            //
+            releaseProximityWakeLock();
         }
     };
 
+    // From AccessibilityService
+    // Called whenever our service is connected
     @Override
-    protected void onServiceConnected() {
-
+    protected void onServiceConnected()
+    {
         super.onServiceConnected();
+        //
+        iWakeLockProximityScreenOff = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(PROXIMITY_SCREEN_OFF_WAKE_LOCK, "FxService:PROXIMITY_SCREEN_OFF_WAKE_LOCK");
+
         // Create an overlay
         setupColorFilter();
-
-
 
         setupProximitySensor();
 
@@ -84,15 +96,30 @@ public class FxService extends AccessibilityService
 
     }
 
+    // From Service
+    // Called whenever our service is stopped
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        closeProximitySensor();
+        releaseProximityWakeLock();
+        iWakeLockProximityScreenOff = null;
+        Toast.makeText(this, R.string.toast_service_destroyed, Toast.LENGTH_SHORT).show();
+    }
+
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
     }
 
+    // I'm not really sure when this is called
     @Override
     public void onInterrupt() {
-        closeProximitySensor();
         Toast.makeText(this, R.string.toast_service_interrupted, Toast.LENGTH_SHORT).show();
     }
+
 
     // Receive preference change notifications
     @Override
@@ -276,10 +303,14 @@ public class FxService extends AccessibilityService
                 if (action == KeyEvent.ACTION_UP)
                 {
                     // Only perform action on key up
-                    // Check if user want us to lock screen when closing her case
+                    // Check if user wants us to lock screen when closing her case
                     if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
                     {
-                        iHandler.postDelayed(iLockScreenCallback, FxSettings.getPrefInt(this, R.string.pref_key_case_close_delay,0) * 1000);
+                        int delayInMs = FxSettings.getPrefInt(this, R.string.pref_key_case_close_delay,0) * 1000;
+                        // Make sure the screen goes off while we are delaying screen lock
+                        iWakeLockProximityScreenOff.acquire(delayInMs+1000);
+                        // Delayed screen lock
+                        iHandler.postDelayed(iLockScreenCallback, delayInMs);
                     }
                 }
 
@@ -296,6 +327,9 @@ public class FxService extends AccessibilityService
                     // Only perform action on key up
                     // To be safe just cancel possible callbacks
                     iHandler.removeCallbacks(iLockScreenCallback);
+                    releaseProximityWakeLock();
+
+
 
                     // Only show message if lock was requested
                     if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
@@ -330,6 +364,15 @@ public class FxService extends AccessibilityService
         //return false;
         return super.onKeyEvent(event);
 
+    }
+
+    // Safely release our wake lock
+    private void releaseProximityWakeLock()
+    {
+        if (iWakeLockProximityScreenOff.isHeld())
+        {
+            iWakeLockProximityScreenOff.release();
+        }
     }
 
 
@@ -367,6 +410,7 @@ public class FxService extends AccessibilityService
                 {
                     // To be safe just cancel possible callbacks
                     iHandler.removeCallbacks(iLockScreenCallback);
+                    releaseProximityWakeLock();
                     //
                     turnOnScreen(FxSettings.getPrefInt(this,R.string.pref_key_proximity_wake_up_timeout,5) * 1000);
                 }

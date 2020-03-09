@@ -92,6 +92,7 @@
     <string name="toast_screen_lock_abort">"Fx Service: Screen Lock Aborted"</string>
     <string name="toast_service_connected">"Fx Service: Connected"</string>
     <string name="toast_service_interrupted">"Fx Service: Interrupted"</string>
+    <string name="toast_service_destroyed">"Fx Service: Disconnected"</string>
     <string name="toast_proximity_sensor_enabled">"Fx Service: Proximity Sensor Enabled"</string>
     <string name="toast_proximity_sensor_disabled">"Fx Service: Proximity Sensor Disabled"</string>
 
