@@ -30,7 +30,6 @@ import androidx.core.graphics.ColorUtils;
 
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.WindowManager;
@@ -86,6 +85,9 @@ public class FxService extends AccessibilityService
         super.onServiceConnected();
         //
         iWakeLockProximityScreenOff = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(PROXIMITY_SCREEN_OFF_WAKE_LOCK, "FxService:PROXIMITY_SCREEN_OFF_WAKE_LOCK");
+        // Get an instance of the sensor manager.
+        iSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
 
         // Create an overlay
         setupColorFilter();
@@ -110,6 +112,7 @@ public class FxService extends AccessibilityService
         closeProximitySensor();
         releaseProximityWakeLock();
         iWakeLockProximityScreenOff = null;
+        iSensorManager = null;
         Toast.makeText(this, R.string.toast_service_destroyed, Toast.LENGTH_SHORT).show();
     }
 
@@ -236,8 +239,6 @@ public class FxService extends AccessibilityService
 
     private void openProximitySensor()
     {
-        // Get an instance of the sensor manager.
-        iSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         // Get proximity sensor from the sensor manager.
         iSensorProximity = iSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         if (iSensorProximity != null)
@@ -251,13 +252,11 @@ public class FxService extends AccessibilityService
 
     private void closeProximitySensor()
     {
-        if (iSensorManager!=null)
+        if (iSensorProximity!=null)
         {
-            iSensorManager.unregisterListener(this);
+            iSensorManager.unregisterListener(this, iSensorProximity);
+            iSensorProximity = null;
         }
-
-        iSensorManager = null;
-        iSensorProximity = null;
     }
 
 
@@ -284,6 +283,13 @@ public class FxService extends AccessibilityService
         }
 
         return brightness;
+    }
+
+    private int getLockDelayInMilliseconds()
+    {
+        int delay = FxSettings.getPrefInt(this, R.string.pref_key_case_close_delay_in_seconds,0) * 1000;
+        delay += FxSettings.getPrefInt(this, R.string.pref_key_case_close_delay_in_minutes,0) * 60 * 1000;
+        return delay;
     }
 
     private void increaseFxScreenBrightness()
@@ -391,7 +397,7 @@ public class FxService extends AccessibilityService
                     // Check if user wants us to lock screen when closing her case
                     if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
                     {
-                        int delayInMs = FxSettings.getPrefInt(this, R.string.pref_key_case_close_delay,0) * 1000;
+                        int delayInMs = getLockDelayInMilliseconds();
                         // Make sure the screen goes off while we are delaying screen lock
                         iWakeLockProximityScreenOff.acquire(delayInMs+1000);
                         // Delayed screen lock

@@ -44,7 +44,8 @@
     <string name="pref_key_filter_close_case">pref_key_filter_close_case</string>
     <string name="pref_key_filter_open_keyboard">pref_key_filter_open_keyboard</string>
     <string name="pref_key_filter_close_keyboard">pref_key_filter_close_keyboard</string>
-    <string name="pref_key_case_close_delay">pref_key_case_close_delay</string>
+    <string name="pref_key_case_close_delay_in_seconds">pref_key_case_close_delay_in_seconds</string>
+    <string name="pref_key_case_close_delay_in_minutes">pref_key_case_close_delay_in_minutes</string>
     <string name="pref_key_case_close_lock_screen">pref_key_case_close_lock_screen</string>
     <string name="pref_key_proximity_wake_up">pref_key_proximity_wake_up</string>
     <string name="pref_key_proximity_wake_up_timeout">pref_key_proximity_wake_up_timeout</string>
@@ -70,7 +71,8 @@
     <string name="pref_category_proximity_sensor">Proximity sensor</string>
 
     <!-- Preferences: Case close  -->
-    <string name="pref_title_case_close_delay">Lock screen after n seconds</string>
+    <string name="pref_title_case_close_delay_in_seconds">Lock screen after n seconds</string>
+    <string name="pref_title_case_close_delay_in_minutes">Lock screen after n minutes</string>
     <string name="pref_title_case_close_lock_screen">Lock screen</string>
 
     <!-- Preferences: Proximity sensor -->
