@@ -30,6 +30,7 @@ import androidx.core.graphics.ColorUtils;
 
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.WindowManager;
@@ -37,6 +38,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
 
@@ -47,8 +50,10 @@ public class FxService extends AccessibilityService
 
     // System sensor manager instance.
     private SensorManager iSensorManager;
-    // Proximity and light sensors, as retrieved from the sensor manager.
+    // Proximity sensor
     private Sensor iSensorProximity;
+    // Light sensor
+    private Sensor iSensorLight;
     // Last value read from the proximity sensor
     private float iLastProximityValue = 0;
     // Used to turn the screen off as soon as you close the case without locking the screen
@@ -58,6 +63,9 @@ public class FxService extends AccessibilityService
     private final int KFxTecProOneBrightnessMax = 255;
     private final int KScreenFilterBrightnessMin = 25;
     private final int KScreenFilterBrightnessMax = 255;
+
+
+    //ArrayList<SensorEvent> iLightSensorSamples = new ArrayList<SensorEvent>();
 
 
     //
@@ -93,6 +101,7 @@ public class FxService extends AccessibilityService
         setupColorFilter();
 
         setupProximitySensor();
+        setupLightSensor();
 
         // Get notification when preferences are changed
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -109,6 +118,7 @@ public class FxService extends AccessibilityService
     {
         super.onDestroy();
 
+        closeLightSensor();
         closeProximitySensor();
         releaseProximityWakeLock();
         iWakeLockProximityScreenOff = null;
@@ -136,6 +146,11 @@ public class FxService extends AccessibilityService
         {
             // Setup proximity sensor anew
             setupProximitySensor();
+        }
+        else if (key == getResources().getString(R.string.pref_key_light_sensor_adaptive_brightness))
+        {
+            // Setup proximity sensor anew
+            setupLightSensor();
         }
         else if (key == getResources().getString(R.string.pref_key_screen_filter_color) || key == getResources().getString(R.string.pref_key_screen_filter_brightness))
         {
@@ -220,6 +235,44 @@ public class FxService extends AccessibilityService
 
     }
 
+
+    private void setupLightSensor()
+    {
+        // Open proximity sensor if needed
+        if (FxSettings.getPrefBoolean(this,R.string.pref_key_light_sensor_adaptive_brightness,false))
+        {
+            Toast.makeText(this, R.string.toast_light_sensor_enabled, Toast.LENGTH_SHORT).show();
+            openLightSensor();
+        }
+        else
+        {
+            Toast.makeText(this, R.string.toast_light_sensor_disabled, Toast.LENGTH_SHORT).show();
+            closeLightSensor();
+        }
+
+    }
+
+    private void openLightSensor()
+    {
+        // Get proximity sensor from the sensor manager.
+        iSensorLight = iSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if (iSensorLight != null)
+        {
+            // SensorManager.SENSOR_DELAY_UI
+            // Sampling period does not seem to be bringing anything
+            iSensorManager.registerListener(this, iSensorLight, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+    }
+
+    private void closeLightSensor()
+    {
+        if (iSensorLight != null)
+        {
+            iSensorManager.unregisterListener(this, iSensorLight);
+            iSensorLight = null;
+        }
+    }
 
     private void setupProximitySensor()
     {
@@ -326,7 +379,7 @@ public class FxService extends AccessibilityService
         int action = event.getAction();
         int keyCode = event.getKeyCode();
 
-        //Log.d("FxTec", event.toString());
+        //Log.d("FxService:", event.toString());
 
         // Hardcoded shortcut to turn overlay on and off
         // That's notably intended to help people who shot themselves in the foot by using a solid color for instance
@@ -482,6 +535,9 @@ public class FxService extends AccessibilityService
             return;
         }
 
+        // Not helpful
+        //Log.d("FxService:", event.toString());
+
         // The sensor type (as defined in the Sensor class).
         int sensorType = event.sensor.getType();
         float currentValue = event.values[0];
@@ -492,6 +548,8 @@ public class FxService extends AccessibilityService
                 // Set the light sensor text view to the light sensor string
                 // from the resources, with the placeholder filled in.
                 //mTextSensorLight.setText(getResources().getString(R.string.label_light, currentValue));
+                //Log.d("FxService: Light sensor ", String.valueOf(currentValue));
+                onLightSensorChanged(event);
                 break;
             case Sensor.TYPE_PROXIMITY:
                 // If no proximity and previously proximity then wake up the screen for defined time
@@ -515,6 +573,31 @@ public class FxService extends AccessibilityService
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy)
     {
+
+    }
+
+    private void onLightSensorChanged(SensorEvent aEvent)
+    {
+        /*
+        iLightSensorSamples.add(aEvent);
+
+        if (iLightSensorSamples.size()>100)
+        {
+            iLightSensorSamples.remove(0);
+        }
+        */
+
+        if (!FxSettings.isScreenFilterEnabled(this) && aEvent.values[0] <= FxSettings.getPrefInt(this, R.string.pref_key_light_sensor_screen_filter_threshold_on,2))
+        {
+            // Turn on screen filter
+            FxSettings.screenFilterOn(this);
+        }
+        else if (FxSettings.isScreenFilterEnabled(this) && aEvent.values[0] >= FxSettings.getPrefInt(this, R.string.pref_key_light_sensor_screen_filter_threshold_off,10))
+        {
+            // Turn off screen filter
+            FxSettings.screenFilterOff(this);
+        }
+
 
     }
 

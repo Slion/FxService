@@ -16,13 +16,13 @@ public class AdaptiveBrightnessTileService extends TileService {
 
     private static final int PERMISSION_DIALOG = 42;
     private static final int SETTING_NOT_FOUND_DIALOG = 24;
-    private static final String TAG = "FxService:";
+    private static final String TAG = "FxAdaptiveBrightness:";
 
 
     @Override
     public void onCreate()
     {
-        Log.i(TAG, "onCreate");
+        //Log.i(TAG, "onCreate");
         requestListeningState(this, new ComponentName(this, getClass()));
         super.onCreate();
         updateTileResources();
@@ -31,7 +31,7 @@ public class AdaptiveBrightnessTileService extends TileService {
     @Override
     public void onStartListening()
     {
-        Log.i(TAG, "onStartListening");
+        //Log.i(TAG, "onStartListening");
         updateTileResources();
         super.onStartListening();
     }
@@ -39,7 +39,7 @@ public class AdaptiveBrightnessTileService extends TileService {
     @Override
     public void onStopListening()
     {
-        Log.i(TAG, "onStopListening");
+        //Log.i(TAG, "onStopListening");
         //updateTileResources();
         super.onStopListening();
     }
@@ -48,14 +48,14 @@ public class AdaptiveBrightnessTileService extends TileService {
     @Override
     public void onTileRemoved()
     {
-        Log.i(TAG, "onTileRemoved");
+        //Log.i(TAG, "onTileRemoved");
         super.onTileRemoved();
     }
 
     @Override
     public void onTileAdded()
     {
-        Log.i(TAG, "onTileAdded");
+        //Log.i(TAG, "onTileAdded");
         super.onTileAdded();
         updateTileResources();
     }
@@ -64,7 +64,7 @@ public class AdaptiveBrightnessTileService extends TileService {
     @Override
     public void onClick()
     {
-        Log.i(TAG, "onClick");
+        //Log.i(TAG, "onClick");
         if (Settings.System.canWrite(this))
         {
             // We have permissions, just get the job done

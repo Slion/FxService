@@ -11,13 +11,13 @@ public class FxBrightnessTileService extends TileService {
 
     private static final int PERMISSION_DIALOG = 42;
     private static final int SETTING_NOT_FOUND_DIALOG = 24;
-    private static final String TAG = "FxService:";
+    private static final String TAG = "FxScreenFilter:";
 
 
     @Override
     public void onCreate()
     {
-        Log.i(TAG, "onCreate");
+        //Log.i(TAG, "onCreate");
         requestListeningState(this, new ComponentName(this, getClass()));
         super.onCreate();
         updateTileResources();
@@ -26,7 +26,7 @@ public class FxBrightnessTileService extends TileService {
     @Override
     public void onStartListening()
     {
-        Log.i(TAG, "onStartListening");
+        //Log.i(TAG, "onStartListening");
         updateTileResources();
         super.onStartListening();
     }
@@ -34,7 +34,7 @@ public class FxBrightnessTileService extends TileService {
     @Override
     public void onStopListening()
     {
-        Log.i(TAG, "onStopListening");
+        //Log.i(TAG, "onStopListening");
         //updateTileResources();
         super.onStopListening();
     }
@@ -43,14 +43,14 @@ public class FxBrightnessTileService extends TileService {
     @Override
     public void onTileRemoved()
     {
-        Log.i(TAG, "onTileRemoved");
+        //Log.i(TAG, "onTileRemoved");
         super.onTileRemoved();
     }
 
     @Override
     public void onTileAdded()
     {
-        Log.i(TAG, "onTileAdded");
+        //Log.i(TAG, "onTileAdded");
         super.onTileAdded();
         updateTileResources();
     }
@@ -59,7 +59,7 @@ public class FxBrightnessTileService extends TileService {
     @Override
     public void onClick()
     {
-        Log.i(TAG, "onClick");
+        //Log.i(TAG, "onClick");
         FxSettings.toggleScreenFilter(this);
         updateTileResources();
         super.onClick();
@@ -72,7 +72,7 @@ public class FxBrightnessTileService extends TileService {
             Tile tile = this.getQsTile();
             tile.setLabel(getString(R.string.tile_service_name_fx_brightness));
             tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_fx_brightness));
-            if (FxSettings.isColorFilterEnabled(this))
+            if (FxSettings.isScreenFilterEnabled(this))
             {
                 tile.setState(Tile.STATE_ACTIVE);
             }

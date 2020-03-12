@@ -109,6 +109,44 @@
     </net.slions.fxservice.FxPreferenceCategory>
 
 
+    <net.slions.fxservice.FxPreferenceCategory
+        app:title="@string/pref_category_light_sensor"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_light_sensor">
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_light_sensor_adaptive_brightness"
+            app:title="@string/pref_title_light_sensor_adaptive_brightness"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:dependency="@string/pref_key_light_sensor_adaptive_brightness"
+            app:key="@string/pref_key_light_sensor_screen_filter_threshold_on"
+            app:title="@string/pref_title_light_sensor_screen_filter_threshold_on"
+            app:defaultValue="2"
+            app:min="0"
+            android:max="60"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:dependency="@string/pref_key_light_sensor_adaptive_brightness"
+            app:key="@string/pref_key_light_sensor_screen_filter_threshold_off"
+            app:title="@string/pref_title_light_sensor_screen_filter_threshold_off"
+            app:defaultValue="10"
+            app:min="0"
+            android:max="60"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
     <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_filters"
         app:summary="@string/pref_summary_filters"
         app:iconSpaceReserved="false"
