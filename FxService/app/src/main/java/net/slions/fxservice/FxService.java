@@ -689,7 +689,11 @@ public class FxService extends AccessibilityService
             }
 
             // TODO: custom dark theme that works
-            AlertDialog.Builder builder = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+            //AlertDialog.Builder builder = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+            //AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.Theme_AppCompat_Dialog_Alert);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AppTheme_LockAlertDialog);
+
+
 
             //
             builder.setMessage(getString(R.string.dialog_lock_message,iSecondsBeforeLock))
