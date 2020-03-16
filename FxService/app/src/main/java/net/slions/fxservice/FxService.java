@@ -486,6 +486,19 @@ public class FxService extends AccessibilityService
             else if (keyCode == KeyEvent.KEYCODE_F5)
             {
                 // Keyboard closed
+
+                if (action == KeyEvent.ACTION_UP)
+                {
+                    if (FxSettings.getPrefBoolean(this,R.string.pref_key_keyboard_close_lock_screen,false))
+                    {
+                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
+                    }
+
+                    // TODO: make screen lock cancellable via proximity sensor?
+                    // TODO: make screen lock cancellable using on screen button?
+                }
+
+
                 // Consume both up and down events to prevent the system doing anything with those
                 // Fix issue with browser page reload when closing keyboard
                 return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_keyboard,true);

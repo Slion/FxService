@@ -83,6 +83,21 @@
             />
     </net.slions.fxservice.FxPreferenceCategory>
 
+    <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_keyboard_close"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_keyboard_close">
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_keyboard_close_lock_screen"
+            app:title="@string/pref_title_case_close_lock_screen"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
     <net.slions.fxservice.FxPreferenceCategory
         app:title="@string/pref_category_proximity_sensor"
         app:iconSpaceReserved="false"
