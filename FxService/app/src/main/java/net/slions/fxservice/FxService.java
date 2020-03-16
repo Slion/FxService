@@ -15,7 +15,9 @@
 package net.slions.fxservice;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -23,6 +25,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 
@@ -30,7 +33,6 @@ import androidx.core.graphics.ColorUtils;
 
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.WindowManager;
@@ -39,14 +41,15 @@ import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
 
 public class FxService extends AccessibilityService
         implements SensorEventListener,
          SharedPreferences.OnSharedPreferenceChangeListener
 {
+
+    private AlertDialog iLockAlertDialog;
+    private int iSecondsBeforeLock=0;
 
     // System sensor manager instance.
     private SensorManager iSensorManager;
@@ -84,6 +87,39 @@ public class FxService extends AccessibilityService
             releaseProximityWakeLock();
         }
     };
+
+
+    // Used to implement lock logic after closing keyboard
+    Runnable iLockAlertDialogCallback = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if (iLockAlertDialog==null)
+            {
+                return;
+            }
+
+            if (iSecondsBeforeLock>0)
+            {
+                // Update our message
+                iLockAlertDialog.setMessage(getString(R.string.dialog_lock_message,iSecondsBeforeLock));
+                iSecondsBeforeLock--;
+                // Wait another second
+                iHandler.postDelayed(iLockAlertDialogCallback, 1000);
+            }
+            else
+            {
+                // Time to lock our device
+                if (iLockAlertDialog!=null)
+                {
+                    iLockAlertDialog.dismiss();
+                }
+                performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
+            }
+        }
+    };
+
 
     // From AccessibilityService
     // Called whenever our service is connected
@@ -486,16 +522,12 @@ public class FxService extends AccessibilityService
             else if (keyCode == KeyEvent.KEYCODE_F5)
             {
                 // Keyboard closed
-
                 if (action == KeyEvent.ACTION_UP)
                 {
                     if (FxSettings.getPrefBoolean(this,R.string.pref_key_keyboard_close_lock_screen,false))
                     {
-                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
+                        lockDeviceUponKeyboardClose();
                     }
-
-                    // TODO: make screen lock cancellable via proximity sensor?
-                    // TODO: make screen lock cancellable using on screen button?
                 }
 
 
@@ -506,7 +538,16 @@ public class FxService extends AccessibilityService
             else if (keyCode == KeyEvent.KEYCODE_F6)
             {
                 // Keyboard opened
-                // Consume both up and down events to prevent the system doing anything with those
+                if (action == KeyEvent.ACTION_UP)
+                {
+                    // Cancel potential pending lock
+                    iHandler.removeCallbacks(iLockAlertDialogCallback);
+                    if (iLockAlertDialog!=null)
+                    {
+                        iLockAlertDialog.dismiss();
+                    }
+                }
+                    // Consume both up and down events to prevent the system doing anything with those
                 return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_keyboard,true);
             }
 
@@ -614,5 +655,46 @@ public class FxService extends AccessibilityService
 
     }
 
+
+    private void lockDeviceUponKeyboardClose()
+    {
+        // Start our countdown if needed
+        iSecondsBeforeLock = FxSettings.getPrefInt(this,R.string.pref_key_keyboard_close_delay_in_seconds,0);
+        if (iSecondsBeforeLock>0)
+        {
+            // If we don't have that permission to show alert dialog then ask for it
+            if (!Settings.canDrawOverlays(this))
+            {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return;
+            }
+
+            // TODO: custom dark theme that works
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+
+            //
+            builder.setMessage(getString(R.string.dialog_lock_message,iSecondsBeforeLock))
+                    .setTitle(R.string.dialog_lock_title)
+                    .setIcon(R.drawable.ic_fx_brightness)
+                    .setCancelable(false)
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> {iHandler.removeCallbacks(iLockAlertDialogCallback); dialog.cancel();});
+            //
+            iLockAlertDialog = builder.create();
+            iLockAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+            iLockAlertDialog.show();
+
+            // Start our delayed lock
+            iSecondsBeforeLock--;
+            iHandler.postDelayed(iLockAlertDialogCallback, 1000);
+        }
+        else
+        {
+            // Perform lock on the spot
+            performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
+        }
+
+    }
 
 }

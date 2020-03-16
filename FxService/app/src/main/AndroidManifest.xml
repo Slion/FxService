@@ -8,6 +8,8 @@
     <!-- Needed to change system settings such as adaptive brightness -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
+    <!-- Needed to display lock cancel dialog -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:allowBackup="true"

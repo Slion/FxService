@@ -48,6 +48,7 @@
     <string name="pref_key_case_close_delay_in_minutes">pref_key_case_close_delay_in_minutes</string>
     <string name="pref_key_case_close_lock_screen">pref_key_case_close_lock_screen</string>
     <string name="pref_key_keyboard_close_lock_screen">pref_key_keyboard_close_lock_screen</string>
+    <string name="pref_key_keyboard_close_delay_in_seconds">pref_key_keyboard_close_delay_in_seconds</string>
     <string name="pref_key_proximity_wake_up">pref_key_proximity_wake_up</string>
     <string name="pref_key_proximity_wake_up_timeout">pref_key_proximity_wake_up_timeout</string>
     <string name="pref_key_light_sensor_adaptive_brightness">pref_key_light_sensor_adaptive_brightness</string>
@@ -65,7 +66,7 @@
     <string name="pref_summary_screen_filter">Ctrl + Fn + O</string>
     <string name="pref_summary_screen_filter_color">Ctrl + Fn + Up or Down</string>
     <string name="pref_summary_case_close">Screen will go off as soon as you close your case and your device will be locked after the specified timeout.</string>
-    <string name="pref_summary_keyboard_close">Your device will be locked whenever you close your keyboard.</string>
+    <string name="pref_summary_keyboard_close">Whenever you close your keyboard, your device will be locked after the specified timeout.</string>
     <string name="pref_summary_proximity_sensor">Screen will turn on as soon as you open your case.</string>
     <string name="pref_summary_light_sensor">Screen brightness will be adjusted according to ambient light levels.</string>
 
@@ -104,7 +105,9 @@
     <string name="pref_title_filter_open_keyboard">Keyboard open (Fn+F6)</string>
     <string name="pref_title_filter_close_keyboard">Keyboard close (Fn+F5)</string>
 
-
+    <!-- Dialog -->
+    <string name="dialog_lock_title">"Fx Service"</string>
+    <string name="dialog_lock_message">"Your device will be locked in %ds"</string>
 
     <!-- Toast -->
     <string name="toast_screen_lock_abort">"Fx Service: Screen lock aborted"</string>

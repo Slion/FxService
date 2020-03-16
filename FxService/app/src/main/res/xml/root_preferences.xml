@@ -95,6 +95,17 @@
             app:iconSpaceReserved="false"
             />
 
+        <SeekBarPreference
+            app:dependency="@string/pref_key_keyboard_close_lock_screen"
+            app:key="@string/pref_key_keyboard_close_delay_in_seconds"
+            app:title="@string/pref_title_case_close_delay_in_seconds"
+            app:defaultValue="0"
+            app:min="0"
+            android:max="59"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
     </net.slions.fxservice.FxPreferenceCategory>
 
 
