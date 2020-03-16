@@ -16,6 +16,7 @@ package net.slions.fxservice;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -100,8 +101,10 @@ public class FxService extends AccessibilityService
                 return;
             }
 
-            if (iSecondsBeforeLock>0)
+            // If our timer is not elapsed and the device is not already locked
+            if (iSecondsBeforeLock>0 && !isDeviceLocked())
             {
+                // Then keep counting
                 // Update our message
                 iLockAlertDialog.setMessage(getString(R.string.dialog_lock_message,iSecondsBeforeLock));
                 iSecondsBeforeLock--;
@@ -110,12 +113,13 @@ public class FxService extends AccessibilityService
             }
             else
             {
+                // Either our countdown is at an end or the device is already locked
                 // Time to lock our device
-                if (iLockAlertDialog!=null)
+                iLockAlertDialog.dismiss();
+                if (!isDeviceLocked()) // Defensive
                 {
-                    iLockAlertDialog.dismiss();
+                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
                 }
-                performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
             }
         }
     };
@@ -655,9 +659,22 @@ public class FxService extends AccessibilityService
 
     }
 
+    private boolean isDeviceLocked()
+    {
+        KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        return km.isKeyguardLocked();
+    }
+
 
     private void lockDeviceUponKeyboardClose()
     {
+        KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        if (isDeviceLocked())
+        {
+            // Device is already locked
+            return;
+        }
+
         // Start our countdown if needed
         iSecondsBeforeLock = FxSettings.getPrefInt(this,R.string.pref_key_keyboard_close_delay_in_seconds,0);
         if (iSecondsBeforeLock>0)
