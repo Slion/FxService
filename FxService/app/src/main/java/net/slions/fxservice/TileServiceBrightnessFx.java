@@ -7,7 +7,7 @@ import android.service.quicksettings.TileService;
 import android.util.Log;
 
 
-public class FxBrightnessTileService extends TileService {
+public class TileServiceBrightnessFx extends TileService {
 
     private static final int PERMISSION_DIALOG = 42;
     private static final int SETTING_NOT_FOUND_DIALOG = 24;

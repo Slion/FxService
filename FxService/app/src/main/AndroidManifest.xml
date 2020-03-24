@@ -47,7 +47,7 @@
 
         <!--quick settings adaptive brightness tile service-->
         <service
-            android:name=".AdaptiveBrightnessTileService"
+            android:name=".TileServiceBrightnessAdaptive"
             android:icon="@drawable/ic_adaptive_brightness"
             android:label="@string/tile_service_name_adaptive_brightness"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -64,7 +64,7 @@
 
         <!--quick settings fx brightness tile service-->
         <service
-            android:name=".FxBrightnessTileService"
+            android:name=".TileServiceBrightnessFx"
             android:icon="@drawable/ic_fx_brightness"
             android:label="@string/tile_service_name_fx_brightness"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">

@@ -12,7 +12,7 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog.Builder;
 
 
-public class AdaptiveBrightnessTileService extends TileService {
+public class TileServiceBrightnessAdaptive extends TileService {
 
     private static final int PERMISSION_DIALOG = 42;
     private static final int SETTING_NOT_FOUND_DIALOG = 24;
