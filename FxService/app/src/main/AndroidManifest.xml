@@ -10,6 +10,9 @@
         tools:ignore="ProtectedPermissions" />
     <!-- Needed to display lock cancel dialog -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!-- Needed to change auto-sync -->
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -78,6 +81,25 @@
                 android:name="android.service.quicksettings.ACTIVE_TILE"
                 android:value="false" />
         </service>
+
+        <!--quick settings auto-sync tile service-->
+        <service
+            android:name=".TileServiceAutoSync"
+            android:icon="@drawable/ic_sync_24px"
+            android:label="@string/tile_service_name_auto_sync"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <!--use ACTIVE_TILE to self-update the quick settings tile.
+            make use of the job service-->
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false" />
+        </service>
+
+
 
     </application>
 

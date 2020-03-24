@@ -81,6 +81,7 @@ public class TileServiceBrightnessAdaptive extends TileService {
 
     private void updateTileResources()
     {
+        // TODO: since we don't change icon or label most of that stuff is not needed
         if (this.getQsTile() != null)
         {
             Tile tile = this.getQsTile();
