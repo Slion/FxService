@@ -158,7 +158,7 @@
             app:dependency="@string/pref_key_light_sensor_adaptive_brightness"
             app:key="@string/pref_key_light_sensor_screen_filter_threshold_on"
             app:title="@string/pref_title_light_sensor_screen_filter_threshold_on"
-            app:defaultValue="2"
+            app:defaultValue="0"
             app:min="0"
             android:max="60"
             app:showSeekBarValue="true"
