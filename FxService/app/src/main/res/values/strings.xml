@@ -91,7 +91,7 @@
 
     <!-- Preferences: Light sensor -->
     <string name="pref_title_light_sensor_adaptive_brightness">Adaptive brightness</string>
-    <string name="pref_title_light_sensor_screen_filter_threshold_on">Turn on screen filter from n Lux and below</string>
+    <string name="pref_title_light_sensor_screen_filter_threshold_on">Turn on screen filter below n Lux</string>
     <string name="pref_title_light_sensor_screen_filter_threshold_off">Turn off screen filter from n Lux and above</string>
 
 

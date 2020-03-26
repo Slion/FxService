@@ -645,7 +645,7 @@ public class FxService extends AccessibilityService
         }
         */
 
-        if (!FxSettings.isScreenFilterEnabled(this) && aEvent.values[0] <= FxSettings.getPrefInt(this, R.string.pref_key_light_sensor_screen_filter_threshold_on,2))
+        if (!FxSettings.isScreenFilterEnabled(this) && aEvent.values[0] < FxSettings.getPrefInt(this, R.string.pref_key_light_sensor_screen_filter_threshold_on,2))
         {
             // Turn on screen filter
             FxSettings.screenFilterOn(this);
