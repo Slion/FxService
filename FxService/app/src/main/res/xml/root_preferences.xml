@@ -89,7 +89,8 @@
     <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_keyboard_close"
         app:iconSpaceReserved="false"
         app:dependency="@string/pref_key_accessibility_service"
-        app:summary="@string/pref_summary_keyboard_close">
+        app:summary="@string/pref_summary_keyboard_close"
+        app:icon="@drawable/ic_pro1_profile">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_keyboard_close_lock_screen"
@@ -116,7 +117,8 @@
         app:title="@string/pref_category_proximity_sensor"
         app:iconSpaceReserved="false"
         app:dependency="@string/pref_key_accessibility_service"
-        app:summary="@string/pref_summary_proximity_sensor">
+        app:summary="@string/pref_summary_proximity_sensor"
+        app:icon="@drawable/ic_case_cover_open">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_proximity_wake_up"
@@ -142,7 +144,8 @@
         app:title="@string/pref_category_light_sensor"
         app:iconSpaceReserved="false"
         app:dependency="@string/pref_key_accessibility_service"
-        app:summary="@string/pref_summary_light_sensor">
+        app:summary="@string/pref_summary_light_sensor"
+        app:icon="@drawable/ic_ambient_light">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_light_sensor_adaptive_brightness"
@@ -179,7 +182,8 @@
     <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_filters"
         app:summary="@string/pref_summary_filters"
         app:iconSpaceReserved="false"
-        app:dependency="@string/pref_key_accessibility_service">
+        app:dependency="@string/pref_key_accessibility_service"
+        app:icon="@drawable/ic_error">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_filter_close_case"
