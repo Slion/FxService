@@ -28,18 +28,27 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        iSettingsFragment = new SettingsFragment();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            // Show back button on action bar
+            //actionBar.setDisplayHomeAsUpEnabled(true);
+            // Show icon
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setIcon(R.drawable.ic_launcher_foreground);
+            //actionBar.setDisplayUseLogoEnabled(true);
+            //actionBar.setLogo(R.drawable.ic_launcher_foreground);
+        }
 
+
+            iSettingsFragment = new SettingsFragment();
         setContentView(R.layout.settings_activity);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings, iSettingsFragment)
                 .commit();
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show back button on action bar
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
+
 
     }
 

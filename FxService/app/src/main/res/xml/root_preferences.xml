@@ -8,12 +8,14 @@
         app:summary="@string/pref_summary_accessibility_service"
         app:defaultValue="false"
         app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_accessibility"
         />
 
     <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_screen_filter"
         app:iconSpaceReserved="false"
         app:dependency="@string/pref_key_accessibility_service"
         app:summary="@string/pref_summary_category_screen_filter"
+        app:icon="@drawable/ic_screen_filter"
         >
 
         <SwitchPreferenceCompat
@@ -51,7 +53,8 @@
     <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_case_close"
         app:iconSpaceReserved="false"
         app:dependency="@string/pref_key_accessibility_service"
-        app:summary="@string/pref_summary_case_close">
+        app:summary="@string/pref_summary_case_close"
+        app:icon="@drawable/ic_case_cover">
 
         <SwitchPreferenceCompat
             app:key="@string/pref_key_case_close_lock_screen"
