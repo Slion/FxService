@@ -67,8 +67,8 @@
 
         <!--quick settings fx brightness tile service-->
         <service
-            android:name=".TileServiceBrightnessFx"
-            android:icon="@drawable/ic_fx_brightness"
+            android:name=".TileServiceScreenFilter"
+            android:icon="@drawable/ic_screen_filter"
             android:label="@string/tile_service_name_fx_brightness"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>

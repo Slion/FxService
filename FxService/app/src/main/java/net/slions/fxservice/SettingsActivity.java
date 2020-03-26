@@ -2,6 +2,8 @@ package net.slions.fxservice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -31,11 +33,22 @@ public class SettingsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
         {
+            try
+            {
+                PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                String version = pInfo.versionName;
+                actionBar.setSubtitle(version);
+            }
+            catch (PackageManager.NameNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+
             // Show back button on action bar
-            //actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
             // Show icon
             actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setIcon(R.drawable.ic_launcher_foreground);
+            actionBar.setIcon(R.drawable.action_bar_icon);
             //actionBar.setDisplayUseLogoEnabled(true);
             //actionBar.setLogo(R.drawable.ic_launcher_foreground);
         }

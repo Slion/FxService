@@ -7,7 +7,7 @@ import android.service.quicksettings.TileService;
 import android.util.Log;
 
 
-public class TileServiceBrightnessFx extends TileService {
+public class TileServiceScreenFilter extends TileService {
 
     private static final int PERMISSION_DIALOG = 42;
     private static final int SETTING_NOT_FOUND_DIALOG = 24;
@@ -70,8 +70,8 @@ public class TileServiceBrightnessFx extends TileService {
         if (this.getQsTile() != null)
         {
             Tile tile = this.getQsTile();
-            tile.setLabel(getString(R.string.tile_service_name_fx_brightness));
-            tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_fx_brightness));
+            //tile.setLabel(getString(R.string.tile_service_name_fx_brightness));
+            //tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_fx_brightness));
             if (FxSettings.isScreenFilterEnabled(this))
             {
                 tile.setState(Tile.STATE_ACTIVE);
