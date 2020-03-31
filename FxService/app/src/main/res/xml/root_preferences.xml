@@ -200,7 +200,7 @@
             app:title="@string/pref_title_auto_sync_start"
             app:defaultValue="8"
             app:min="0"
-            android:max="24"
+            android:max="23"
             app:showSeekBarValue="true"
             app:iconSpaceReserved="false"
             />
@@ -211,7 +211,7 @@
             app:title="@string/pref_title_auto_sync_end"
             app:defaultValue="22"
             app:min="0"
-            android:max="24"
+            android:max="23"
             app:showSeekBarValue="true"
             app:iconSpaceReserved="false"
             />

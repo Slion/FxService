@@ -313,7 +313,17 @@ public class FxService extends AccessibilityService
     private void setupAutoSync()
     {
         cancelAutoSync();
-        iHandler.postDelayed(iAutoSyncTurnOnCallback,0);
+
+        if (isWithinAutoSyncSchedule())
+        {
+            // If within schedule hours start by turning on auto-sync now
+            iHandler.postDelayed(iAutoSyncTurnOnCallback, 0);
+        }
+        else
+        {
+            // If outside schedule hours start by turning off auto-sync now
+            iHandler.postDelayed(iAutoSyncTurnOffCallback, 0);
+        }
         //scheduleNextAutoSync();
     }
 
