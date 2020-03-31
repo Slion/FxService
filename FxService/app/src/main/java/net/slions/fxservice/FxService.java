@@ -42,6 +42,11 @@ import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+// For aut-sync scheduler
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+
 import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
 
 public class FxService extends AccessibilityService
@@ -76,19 +81,51 @@ public class FxService extends AccessibilityService
     FrameLayout mLayout;
     //View mColorLayout;
 
+    // Used to schedule various callbacks
     Handler iHandler = new Handler();
+
+    // Used to turn on auto-sync
+    Runnable iAutoSyncTurnOnCallback = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            //
+            getContentResolver().setMasterSyncAutomatically(true);
+            Toast.makeText(FxService.this, R.string.toast_auto_sync_enabled, Toast.LENGTH_SHORT).show();
+            //
+            long delay = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_duration,5) * 60 * 1000;
+            iHandler.postDelayed(iAutoSyncTurnOffCallback, delay);
+        }
+    };
+
+
+    // Used to turn off auto-sync
+    Runnable iAutoSyncTurnOffCallback = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            // Turn off call back
+            getContentResolver().setMasterSyncAutomatically(false);
+            Toast.makeText(FxService.this, R.string.toast_auto_sync_disabled, Toast.LENGTH_SHORT).show();
+            //
+            scheduleNextAutoSync();
+        }
+    };
+
+    // Used to delay lock screen action
     Runnable iLockScreenCallback = new Runnable()
     {
         @Override
         public void run()
         {
-            //Do something after 100ms
+            // Lock our screen
             performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
-            //
+            // No need for proximity lock anymore
             releaseProximityWakeLock();
         }
     };
-
 
     // Used to implement lock logic after closing keyboard
     Runnable iLockAlertDialogCallback = new Runnable()
@@ -139,9 +176,12 @@ public class FxService extends AccessibilityService
 
         // Create an overlay
         setupColorFilter();
-
+        //
         setupProximitySensor();
+        //
         setupLightSensor();
+        //
+        setupAutoSync();
 
         // Get notification when preferences are changed
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -158,6 +198,7 @@ public class FxService extends AccessibilityService
     {
         super.onDestroy();
 
+        cancelAutoSync();
         closeLightSensor();
         closeProximitySensor();
         releaseProximityWakeLock();
@@ -202,8 +243,93 @@ public class FxService extends AccessibilityService
             // Overlay was turned on or off
             setupColorFilter();
         }
+        else if (key.startsWith("pref_key_auto_sync"))
+        {
+            // Something changed in our auto sync setup
+            setupAutoSync();
+        }
+
     }
 
+
+    void scheduleNextAutoSync()
+    {
+        if (!isAutoSyncSchedulerEnabled())
+        {
+            // Scheduler is disabled
+            return;
+        }
+
+        if (isWithinAutoSyncSchedule())
+        {
+            long delay = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_frequency,30);
+            delay -= FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_duration,5);
+            delay *= 60 * 1000;
+            iHandler.postDelayed(iAutoSyncTurnOnCallback, delay);
+        }
+        else
+        {
+            // Only turn auto sync back on at the start of the next start
+            int startHour = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_start,8);
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime start = now.truncatedTo(ChronoUnit.DAYS).withHour(startHour);
+            if (now.isAfter(start))
+            {
+                start = start.plusDays(1);
+            }
+
+            long delay = ChronoUnit.MILLIS.between(now, start);
+            iHandler.postDelayed(iAutoSyncTurnOnCallback, delay);
+        }
+    }
+
+    boolean isWithinAutoSyncSchedule()
+    {
+        int startHour = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_start,8);
+        int endHour = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_end,22);
+
+        if ( startHour == endHour )
+        {
+            // Just sync all day long
+            return true;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = now.truncatedTo(ChronoUnit.DAYS).withHour(startHour);
+        LocalDateTime end = now.truncatedTo(ChronoUnit.DAYS).withHour(endHour);
+
+        // Make sure start is before end
+        if (start.isAfter(end))
+        {
+            start = start.minusHours(24);
+        }
+
+        if ( now.isAfter(start) && now.isBefore(end) )
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void setupAutoSync()
+    {
+        cancelAutoSync();
+        iHandler.postDelayed(iAutoSyncTurnOnCallback,0);
+        //scheduleNextAutoSync();
+    }
+
+    private void cancelAutoSync()
+    {
+        iHandler.removeCallbacks(iAutoSyncTurnOffCallback);
+        iHandler.removeCallbacks(iAutoSyncTurnOnCallback);
+    }
+
+
+    private boolean isAutoSyncSchedulerEnabled()
+    {
+        return FxSettings.getPrefBoolean(this, R.string.pref_key_auto_sync_scheduler,false);
+    }
 
     private boolean isScreenFilterEnabled()
     {

@@ -59,6 +59,12 @@
     <string name="pref_key_screen_filter">pref_key_screen_filter</string>
     <string name="pref_key_screen_filter_color">pref_key_screen_filter_color</string>
     <string name="pref_key_screen_filter_brightness">pref_key_screen_filter_brightness</string>
+    <string name="pref_key_auto_sync_scheduler">pref_key_auto_sync_scheduler</string>
+    <string name="pref_key_auto_sync_start">pref_key_auto_sync_start</string>
+    <string name="pref_key_auto_sync_end">pref_key_auto_sync_end</string>
+    <string name="pref_key_auto_sync_frequency">pref_key_auto_sync_frequency</string>
+    <string name="pref_key_auto_sync_duration">pref_key_auto_sync_duration</string>
+
 
     <!-- Summaries -->
     <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
@@ -70,6 +76,7 @@
     <string name="pref_summary_keyboard_close">Whenever you close your keyboard, your device will be locked after the specified timeout.</string>
     <string name="pref_summary_proximity_sensor">Screen will turn on as soon as you open your case.</string>
     <string name="pref_summary_light_sensor">Screen brightness will be adjusted according to ambient light levels.</string>
+    <string name="pref_summary_auto_sync">Enable auto-sync schedule to save battery power.</string>
 
     <!-- Categories Titles -->
     <string name="pref_title_accessibility_service">Accessibility service</string>
@@ -79,6 +86,7 @@
     <string name="pref_category_keyboard_close">Keyboard close</string>
     <string name="pref_category_proximity_sensor">Proximity sensor</string>
     <string name="pref_category_light_sensor">Light sensor</string>
+    <string name="pref_category_auto_sync">Auto-sync</string>
 
     <!-- Preferences: Case close  -->
     <string name="pref_title_case_close_delay_in_seconds">Lock screen after n seconds</string>
@@ -100,6 +108,14 @@
     <string name="pref_title_screen_filter_color">Colour</string>
     <string name="pref_title_screen_filter_brightness">Brightness</string>
 
+    <!-- Preferences: Auto-sync -->
+    <string name="pref_title_auto_sync_scheduler">Auto-sync scheduler</string>
+    <string name="pref_title_auto_sync_start">Start time, hour of the day</string>
+    <string name="pref_title_auto_sync_end">End time, hour of the day</string>
+    <string name="pref_title_auto_sync_frequency">Turn on auto-sync every n minutes</string>
+    <string name="pref_title_auto_sync_duration">Turn off auto-sync after n minutes</string>
+
+
     <!-- Preferences: Filters -->
     <string name="pref_title_filter_open_case">Case open (Fn+F4)</string>
     <string name="pref_title_filter_close_case">Case close (Fn+F3)</string>
@@ -119,6 +135,8 @@
     <string name="toast_proximity_sensor_disabled">"Fx Service: Proximity sensor disabled"</string>
     <string name="toast_light_sensor_enabled">"Fx Service: Light sensor enabled"</string>
     <string name="toast_light_sensor_disabled">"Fx Service: Light sensor disabled"</string>
+    <string name="toast_auto_sync_enabled">"Fx Service: Auto-sync enabled"</string>
+    <string name="toast_auto_sync_disabled">"Fx Service: Auto-sync disabled"</string>
 
 
 </resources>

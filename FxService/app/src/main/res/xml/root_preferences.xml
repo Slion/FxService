@@ -179,6 +179,68 @@
     </net.slions.fxservice.FxPreferenceCategory>
 
 
+    <net.slions.fxservice.FxPreferenceCategory
+        app:title="@string/pref_category_auto_sync"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_auto_sync"
+        app:icon="@drawable/ic_sync_24px">
+
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_auto_sync_scheduler"
+            app:title="@string/pref_title_auto_sync_scheduler"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:key="@string/pref_key_auto_sync_start"
+            app:title="@string/pref_title_auto_sync_start"
+            app:defaultValue="8"
+            app:min="0"
+            android:max="24"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:key="@string/pref_key_auto_sync_end"
+            app:title="@string/pref_title_auto_sync_end"
+            app:defaultValue="22"
+            app:min="0"
+            android:max="24"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:key="@string/pref_key_auto_sync_frequency"
+            app:title="@string/pref_title_auto_sync_frequency"
+            app:defaultValue="30"
+            app:min="15"
+            android:max="60"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:key="@string/pref_key_auto_sync_duration"
+            app:title="@string/pref_title_auto_sync_duration"
+            app:defaultValue="5"
+            app:min="1"
+            android:max="15"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
     <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_filters"
         app:summary="@string/pref_summary_filters"
         app:iconSpaceReserved="false"
@@ -212,6 +274,8 @@
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             />
+
+
 
     </net.slions.fxservice.FxPreferenceCategory>
 
