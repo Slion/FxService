@@ -62,8 +62,8 @@
     <string name="pref_key_auto_sync_scheduler">pref_key_auto_sync_scheduler</string>
     <string name="pref_key_auto_sync_start">pref_key_auto_sync_start</string>
     <string name="pref_key_auto_sync_end">pref_key_auto_sync_end</string>
-    <string name="pref_key_auto_sync_frequency">pref_key_auto_sync_frequency</string>
-    <string name="pref_key_auto_sync_duration">pref_key_auto_sync_duration</string>
+    <string name="pref_key_auto_sync_on_duration">pref_key_auto_sync_on_duration</string>
+    <string name="pref_key_auto_sync_off_duration">pref_key_auto_sync_off_duration</string>
 
 
     <!-- Summaries -->
@@ -112,8 +112,8 @@
     <string name="pref_title_auto_sync_scheduler">Auto-sync scheduler</string>
     <string name="pref_title_auto_sync_start">Start time, hour of the day</string>
     <string name="pref_title_auto_sync_end">End time, hour of the day</string>
-    <string name="pref_title_auto_sync_frequency">Turn on auto-sync every n minutes</string>
-    <string name="pref_title_auto_sync_duration">Turn off auto-sync after n minutes</string>
+    <string name="pref_title_auto_sync_on_duration">Turn on auto-sync for n minutes</string>
+    <string name="pref_title_auto_sync_off_duration">Turn off auto-sync for n minutes</string>
 
 
     <!-- Preferences: Filters -->

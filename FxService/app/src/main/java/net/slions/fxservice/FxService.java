@@ -94,7 +94,7 @@ public class FxService extends AccessibilityService
             getContentResolver().setMasterSyncAutomatically(true);
             Toast.makeText(FxService.this, R.string.toast_auto_sync_enabled, Toast.LENGTH_SHORT).show();
             //
-            long delay = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_duration,5) * 60 * 1000;
+            long delay = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_on_duration,5) * 60 * 1000;
             iHandler.postDelayed(iAutoSyncTurnOffCallback, delay);
         }
     };
@@ -262,9 +262,7 @@ public class FxService extends AccessibilityService
 
         if (isWithinAutoSyncSchedule())
         {
-            long delay = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_frequency,30);
-            delay -= FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_duration,5);
-            delay *= 60 * 1000;
+            long delay = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_off_duration,15) * 60 * 1000;
             iHandler.postDelayed(iAutoSyncTurnOnCallback, delay);
         }
         else
