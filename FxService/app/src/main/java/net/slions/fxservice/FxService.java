@@ -314,7 +314,7 @@ public class FxService extends AccessibilityService
     {
         cancelAutoSync();
 
-        if (isWithinAutoSyncSchedule())
+        if (isAutoSyncSchedulerEnabled() && isWithinAutoSyncSchedule())
         {
             // If within schedule hours start by turning on auto-sync now
             iHandler.postDelayed(iAutoSyncTurnOnCallback, 0);
@@ -832,7 +832,7 @@ public class FxService extends AccessibilityService
             //
             builder.setMessage(getString(R.string.dialog_lock_message,iSecondsBeforeLock))
                     .setTitle(R.string.dialog_lock_title)
-                    .setIcon(R.drawable.ic_fx_brightness)
+                    .setIcon(R.drawable.ic_app_icon)
                     .setCancelable(false)
                     .setNegativeButton(R.string.cancel, (dialog, which) -> {iHandler.removeCallbacks(iLockAlertDialogCallback); dialog.cancel();});
             //
