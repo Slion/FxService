@@ -26,16 +26,6 @@
             app:iconSpaceReserved="false"
             />
 
-        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
-            android:key="@string/pref_key_screen_filter_color"
-            android:title="@string/pref_title_screen_filter_color"
-            android:defaultValue="@color/colorDefaultFilter"
-            app:cpv_showAlphaSlider="true"
-            app:cpv_dialogType="preset"
-            app:cpv_colorShape="circle"
-            app:iconSpaceReserved="false"
-            />
-
         <SeekBarPreference
             app:key="@string/pref_key_screen_filter_brightness"
             app:title="@string/pref_title_screen_filter_brightness"
@@ -47,6 +37,25 @@
             app:iconSpaceReserved="false"
             app:updatesContinuously="true"
             />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:key="@string/pref_key_screen_filter_color"
+            android:title="@string/pref_title_screen_filter_color"
+            android:defaultValue="@color/colorDefaultFilter"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_dialogType="preset"
+            app:cpv_colorShape="circle"
+            app:iconSpaceReserved="false"
+            />
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_screen_filter_disable_touch_screen"
+            app:title="@string/pref_title_screen_filter_disable_touch_screen"
+            app:summary="@string/pref_summary_screen_filter_disable_touch_screen"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
 
     </net.slions.fxservice.FxPreferenceCategory>
 

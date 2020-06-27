@@ -376,7 +376,9 @@ public class FxService extends AccessibilityService
             lp.format = PixelFormat.TRANSLUCENT;
 
             lp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-            lp.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            if (!FxSettings.getPrefBoolean(this, R.string.pref_key_screen_filter_disable_touch_screen,false)) {
+                lp.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            }
             lp.flags |= WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
             lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;

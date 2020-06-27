@@ -57,6 +57,7 @@
     <string name="pref_key_light_sensor_screen_filter_threshold_off">pref_key_light_sensor_screen_filter_threshold_off</string>
     <string name="pref_key_accessibility_service">pref_key_accessibility_service</string>
     <string name="pref_key_screen_filter">pref_key_screen_filter</string>
+    <string name="pref_key_screen_filter_disable_touch_screen">pref_key_screen_filter_disable_touch_screen</string>
     <string name="pref_key_screen_filter_color">pref_key_screen_filter_color</string>
     <string name="pref_key_screen_filter_brightness">pref_key_screen_filter_brightness</string>
     <string name="pref_key_auto_sync_scheduler">pref_key_auto_sync_scheduler</string>
@@ -71,6 +72,7 @@
     <string name="pref_summary_accessibility_service">Enable this for Fx Service to work at all</string>
     <string name="pref_summary_category_screen_filter">Overlay to adjust screen brightness beyond system settings.</string>
     <string name="pref_summary_screen_filter">Ctrl + Fn + O</string>
+    <string name="pref_summary_screen_filter_disable_touch_screen">Your touch screen won\'t be responsive while screen filter overlay is on.</string>
     <string name="pref_summary_screen_filter_color">Ctrl + Fn + Up or Down</string>
     <string name="pref_summary_case_close">Screen will go off as soon as you close your case and your device will be locked after the specified timeout.</string>
     <string name="pref_summary_keyboard_close">Whenever you close your keyboard, your device will be locked after the specified timeout.</string>
@@ -105,6 +107,7 @@
 
     <!-- Preferences: Screen filter -->
     <string name="pref_title_screen_filter">Enable screen filter</string>
+    <string name="pref_title_screen_filter_disable_touch_screen">Disable touch screen</string>
     <string name="pref_title_screen_filter_color">Colour</string>
     <string name="pref_title_screen_filter_brightness">Brightness</string>
 
