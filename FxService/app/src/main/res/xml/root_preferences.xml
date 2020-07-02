@@ -150,6 +150,56 @@
 
 
     <net.slions.fxservice.FxPreferenceCategory
+        app:title="@string/pref_category_keyboard"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_keyboard"
+        app:icon="@drawable/ic_keyboard">
+
+        <SeekBarPreference
+            app:key="@string/pref_key_keyboard_key_down_vibration_duration"
+            app:title="@string/pref_title_keyboard_key_down_vibration_duration"
+            app:defaultValue="1"
+            app:min="0"
+            android:max="100"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:key="@string/pref_key_keyboard_key_down_vibration_amplitude"
+            app:title="@string/pref_title_keyboard_key_down_vibration_amplitude"
+            app:defaultValue="1"
+            app:min="1"
+            android:max="255"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:key="@string/pref_key_keyboard_key_up_vibration_duration"
+            app:title="@string/pref_title_keyboard_key_up_vibration_duration"
+            app:defaultValue="0"
+            app:min="0"
+            android:max="100"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:key="@string/pref_key_keyboard_key_up_vibration_amplitude"
+            app:title="@string/pref_title_keyboard_key_up_vibration_amplitude"
+            app:defaultValue="1"
+            app:min="1"
+            android:max="255"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
+    <net.slions.fxservice.FxPreferenceCategory
         app:title="@string/pref_category_light_sensor"
         app:iconSpaceReserved="false"
         app:dependency="@string/pref_key_accessibility_service"

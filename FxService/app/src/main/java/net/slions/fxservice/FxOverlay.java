@@ -68,9 +68,6 @@ public class FxOverlay extends FrameLayout {
 
         MultitouchTest.screenDensity = metrics.densityDpi;
 
-
-
-
         numberPaint.setStrokeWidth(1);
         numberPaint.setARGB(255, 255, 255, 255);
         numberPaint.setStyle(Paint.Style.FILL);

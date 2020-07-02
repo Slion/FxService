@@ -65,7 +65,10 @@
     <string name="pref_key_auto_sync_end">pref_key_auto_sync_end</string>
     <string name="pref_key_auto_sync_on_duration">pref_key_auto_sync_on_duration</string>
     <string name="pref_key_auto_sync_off_duration">pref_key_auto_sync_off_duration</string>
-
+    <string name="pref_key_keyboard_key_down_vibration_duration">pref_key_keyboard_key_down_vibration_duration</string>
+    <string name="pref_key_keyboard_key_down_vibration_amplitude">pref_key_keyboard_key_down_vibration_amplitude</string>
+    <string name="pref_key_keyboard_key_up_vibration_duration">pref_key_keyboard_key_up_vibration_duration</string>
+    <string name="pref_key_keyboard_key_up_vibration_amplitude">pref_key_keyboard_key_up_vibration_amplitude</string>
 
     <!-- Summaries -->
     <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
@@ -79,6 +82,7 @@
     <string name="pref_summary_proximity_sensor">Screen will turn on as soon as you open your case.</string>
     <string name="pref_summary_light_sensor">Screen brightness will be adjusted according to ambient light levels.</string>
     <string name="pref_summary_auto_sync">Enable auto-sync schedule to save battery power.</string>
+    <string name="pref_summary_keyboard">Customise your keyboard behaviour.</string>
 
     <!-- Categories Titles -->
     <string name="pref_title_accessibility_service">Accessibility service</string>
@@ -89,6 +93,7 @@
     <string name="pref_category_proximity_sensor">Proximity sensor</string>
     <string name="pref_category_light_sensor">Light sensor</string>
     <string name="pref_category_auto_sync">Auto-sync</string>
+    <string name="pref_category_keyboard">Keyboard</string>
 
     <!-- Preferences: Case close  -->
     <string name="pref_title_case_close_delay_in_seconds">Lock screen after n seconds</string>
@@ -98,6 +103,12 @@
     <!-- Preferences: Proximity sensor -->
     <string name="pref_title_proximity_wake_up">Wake up screen</string>
     <string name="pref_title_proximity_wake_up_timeout">Wake up screen for n seconds</string>
+
+    <!-- Preferences: Keyboard -->
+    <string name="pref_title_keyboard_key_down_vibration_duration">Key down vibration duration (ms)</string>
+    <string name="pref_title_keyboard_key_down_vibration_amplitude">Key down vibration amplitude</string>
+    <string name="pref_title_keyboard_key_up_vibration_duration">Key up vibration duration (ms)</string>
+    <string name="pref_title_keyboard_key_up_vibration_amplitude">Key up vibration amplitude</string>
 
     <!-- Preferences: Light sensor -->
     <string name="pref_title_light_sensor_adaptive_brightness">Adaptive brightness</string>

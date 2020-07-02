@@ -32,6 +32,8 @@ import android.os.PowerManager;
 
 import androidx.core.graphics.ColorUtils;
 
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.Display;
@@ -162,6 +164,8 @@ public class FxService extends AccessibilityService
     };
 
 
+    Vibrator iVibrator;
+
     // From AccessibilityService
     // Called whenever our service is connected
     @Override
@@ -189,6 +193,7 @@ public class FxService extends AccessibilityService
 
         Toast.makeText(this, R.string.toast_service_connected, Toast.LENGTH_SHORT).show();
 
+        iVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     // From Service
@@ -204,6 +209,7 @@ public class FxService extends AccessibilityService
         releaseProximityWakeLock();
         iWakeLockProximityScreenOff = null;
         iSensorManager = null;
+        iVibrator = null;
         Toast.makeText(this, R.string.toast_service_destroyed, Toast.LENGTH_SHORT).show();
     }
 
@@ -673,7 +679,6 @@ public class FxService extends AccessibilityService
                     }
                 }
 
-
                 // Consume both up and down events to prevent the system doing anything with those
                 // Fix issue with browser page reload when closing keyboard
                 return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_keyboard,true);
@@ -694,16 +699,39 @@ public class FxService extends AccessibilityService
                 return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_keyboard,true);
             }
 
-
-
         }
 
+        // For proper system vibration and audio feedback consider using:
+        // view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        // This will require a view however and currently we only have one when our overlay is one.
 
+        if (action == KeyEvent.ACTION_DOWN) {
+            //v.vibrate(25);
+            //v.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+            //v.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+
+            int duration = FxSettings.getPrefInt(this, R.string.pref_key_keyboard_key_down_vibration_duration,1);
+            int amplitude = FxSettings.getPrefInt(this, R.string.pref_key_keyboard_key_down_vibration_amplitude,1);
+
+            if (duration!=0) {
+                iVibrator.vibrate(VibrationEffect.createOneShot(duration, amplitude));
+            }
+
+        }
+        else if (action == KeyEvent.ACTION_UP) {
+
+            int duration = FxSettings.getPrefInt(this, R.string.pref_key_keyboard_key_up_vibration_duration,0);
+            int amplitude = FxSettings.getPrefInt(this, R.string.pref_key_keyboard_key_up_vibration_amplitude,1);
+
+            if (duration!=0) {
+                iVibrator.vibrate(VibrationEffect.createOneShot(duration, amplitude));
+            }
+        }
 
         //return false;
         return super.onKeyEvent(event);
-
     }
+    
 
     // Safely release our wake lock
     private void releaseProximityWakeLock()
