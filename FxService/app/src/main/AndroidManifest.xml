@@ -4,6 +4,7 @@
     package="net.slions.fxservice">
 
     <!-- Needed to wake up the screen -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Needed to change system settings such as adaptive brightness -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS"

@@ -356,6 +356,7 @@ public class FxService extends AccessibilityService
 
         if (isScreenFilterEnabled() && mLayout == null)
         {
+            //mLayout = new FxOverlay(this);
             mLayout = new FrameLayout(this);
 
             // Fetch screen size to work out our overlay size
@@ -379,6 +380,8 @@ public class FxService extends AccessibilityService
             if (!FxSettings.getPrefBoolean(this, R.string.pref_key_screen_filter_disable_touch_screen,false)) {
                 lp.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
             }
+
+            //lp.flags |= WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
             lp.flags |= WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
             lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
