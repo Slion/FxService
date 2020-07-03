@@ -7,8 +7,8 @@ android {
         applicationId "net.slions.fxservice"
         minSdkVersion 28
         targetSdkVersion 28
-        versionCode 17
-        versionName "0.9.4"
+        versionCode 18
+        versionName "0.9.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
