@@ -29,6 +29,16 @@ public class FxSettings
         return getPrefBoolean(aContext,R.string.pref_key_screen_filter,false);
     }
 
+    static void toggleScreenRotationAuto(Context aContext)
+    {
+        setPrefBoolean(aContext, R.string.pref_key_screen_rotation_auto,!getPrefBoolean(aContext,R.string.pref_key_screen_rotation_auto,false));
+    }
+
+    static boolean isScreenRotationAuto(Context aContext)
+    {
+        return getPrefBoolean(aContext,R.string.pref_key_screen_rotation_auto,false);
+    }
+
     // Fetch specified boolean preference
     static boolean getPrefBoolean(Context aContext, int aKey, Boolean aDefault)
     {

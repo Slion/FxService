@@ -100,7 +100,22 @@
                 android:value="false" />
         </service>
 
+        <!--quick settings auto-rotate tile service-->
+        <service
+            android:name=".TileServiceAutoRotate"
+            android:icon="@drawable/ic_screen_rotation"
+            android:label="@string/tile_service_name_screen_rotation_auto"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
 
+            <!--use ACTIVE_TILE to self-update the quick settings tile.
+            make use of the job service-->
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false" />
+        </service>
 
     </application>
 

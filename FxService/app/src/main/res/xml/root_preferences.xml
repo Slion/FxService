@@ -148,6 +148,22 @@
             />
     </net.slions.fxservice.FxPreferenceCategory>
 
+    <net.slions.fxservice.FxPreferenceCategory
+        app:title="@string/pref_category_screen_rotation"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:summary="@string/pref_summary_screen_rotation"
+        app:icon="@drawable/ic_screen_rotation">
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_screen_rotation_auto"
+            app:title="@string/pref_title_screen_rotation_auto"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
 
     <net.slions.fxservice.FxPreferenceCategory
         app:title="@string/pref_category_keyboard"

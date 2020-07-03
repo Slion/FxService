@@ -36,8 +36,10 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.Surface;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
@@ -61,6 +63,17 @@ public class FxService extends AccessibilityService
 
     // System sensor manager instance.
     private SensorManager iSensorManager;
+
+    private final float[] accelerometerReading = new float[3];
+    private final float[] magnetometerReading = new float[3];
+
+    private final float[] rotationMatrix = new float[9];
+    private final float[] orientationAngles = new float[3];
+
+    // Accelerometer sensor
+    private Sensor iSensorAccelerometer;
+    // Accelerometer sensor
+    private Sensor iSensorMagnetometer;
     // Proximity sensor
     private Sensor iSensorProximity;
     // Light sensor
@@ -186,6 +199,9 @@ public class FxService extends AccessibilityService
         setupLightSensor();
         //
         setupAutoSync();
+        //
+        setupAccelerometer();
+        setupMagnetometer();
 
         // Get notification when preferences are changed
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -206,6 +222,8 @@ public class FxService extends AccessibilityService
         cancelAutoSync();
         closeLightSensor();
         closeProximitySensor();
+        closeAccelerometer();
+        closeMagnetometer();
         releaseProximityWakeLock();
         iWakeLockProximityScreenOff = null;
         iSensorManager = null;
@@ -254,7 +272,12 @@ public class FxService extends AccessibilityService
             // Something changed in our auto sync setup
             setupAutoSync();
         }
-
+        else if (key == getResources().getString(R.string.pref_key_screen_rotation_auto))
+        {
+            // Something changed in our screen rotation setup
+            setupAccelerometer();
+            setupMagnetometer();
+        }
     }
 
 
@@ -472,7 +495,6 @@ public class FxService extends AccessibilityService
             Toast.makeText(this, R.string.toast_proximity_sensor_disabled, Toast.LENGTH_SHORT).show();
             closeProximitySensor();
         }
-
     }
 
     private void openProximitySensor()
@@ -497,6 +519,80 @@ public class FxService extends AccessibilityService
         }
     }
 
+    private void setupAccelerometer()
+    {
+        // Open proximity sensor if needed
+        if (FxSettings.isScreenRotationAuto(this))
+        {
+            //Toast.makeText(this, R.string.toast_proximity_sensor_enabled, Toast.LENGTH_SHORT).show();
+            openAccelerometer();
+        }
+        else
+        {
+            //Toast.makeText(this, R.string.toast_proximity_sensor_disabled, Toast.LENGTH_SHORT).show();
+            closeAccelerometer();
+        }
+    }
+
+    //
+
+    private void openAccelerometer()
+    {
+        iSensorAccelerometer = iSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (iSensorAccelerometer != null) {
+            iSensorManager.registerListener(this, iSensorAccelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    private void closeAccelerometer()
+    {
+        if (iSensorAccelerometer != null)
+        {
+            iSensorManager.unregisterListener(this, iSensorAccelerometer);
+            iSensorAccelerometer = null;
+        }
+    }
+
+    /**
+     *
+     */
+    private void setupMagnetometer()
+    {
+        // Open proximity sensor if needed
+        if (FxSettings.isScreenRotationAuto(this))
+        {
+            //Toast.makeText(this, R.string.toast_proximity_sensor_enabled, Toast.LENGTH_SHORT).show();
+            openMagnetometer();
+        }
+        else
+        {
+            //Toast.makeText(this, R.string.toast_proximity_sensor_disabled, Toast.LENGTH_SHORT).show();
+            closeMagnetometer();
+        }
+    }
+
+    /**
+     *
+     */
+    private void openMagnetometer()
+    {
+        iSensorMagnetometer = iSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (iSensorMagnetometer != null) {
+            iSensorManager.registerListener(this, iSensorMagnetometer,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    private void closeMagnetometer()
+    {
+        if (iSensorMagnetometer != null)
+        {
+            iSensorManager.unregisterListener(this, iSensorMagnetometer);
+            iSensorMagnetometer = null;
+        }
+
+    }
 
     private boolean isScreenFilterBrightnessMaxed()
     {
@@ -731,7 +827,6 @@ public class FxService extends AccessibilityService
         //return false;
         return super.onKeyEvent(event);
     }
-    
 
     // Safely release our wake lock
     private void releaseProximityWakeLock()
@@ -788,12 +883,59 @@ public class FxService extends AccessibilityService
                 }
 
                 iLastProximityValue = currentValue;
-
                 break;
+
+            case Sensor.TYPE_ACCELEROMETER:
+                System.arraycopy(event.values, 0, accelerometerReading,0, accelerometerReading.length);
+                updateOrientationAngles();
+                break;
+
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                System.arraycopy(event.values, 0, magnetometerReading,0, magnetometerReading.length);
+                break;
+
             default:
                 // do nothing
         }
     }
+
+    // Compute the three orientation angles based on the most recent readings from
+    // the device's accelerometer and magnetometer.
+    // See: https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient
+    public void updateOrientationAngles() {
+        // Update rotation matrix, which is needed to update orientation angles.
+        SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading);
+        SensorManager.getOrientation(rotationMatrix, orientationAngles);
+
+        double azimuth = Math.toDegrees(orientationAngles[0]);
+        // Pitch is used for portrait detection
+        // Pitch -90 is head down, 90 is head up
+        double pitch = Math.toDegrees(orientationAngles[1]);
+        // Roll is used for landscape detection
+        // Roll -90 is left side down, +90 is right side down
+        double roll = Math.toDegrees(orientationAngles[2]);
+
+        if (Settings.System.canWrite(this)) { // defensive
+            // Landscape detection
+            if (roll < -60) {
+                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_90);
+            } else if (roll > 60) {
+                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_270);
+            }
+
+            // Portrait detection
+            if (pitch < -60) {
+                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_0);
+            } else if (pitch > 60) {
+                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_180);
+            }
+        }
+
+        //Log.d("FxService:",  azimuth + "," + pitch +"," + roll);
+
+        // "mOrientationAngles" now has up-to-date information.
+    }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy)

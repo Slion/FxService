@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -105,7 +106,26 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        ((SwitchPreferenceCompat) iSettingsFragment.findPreference(getResources().getString(R.string.pref_key_screen_rotation_auto))).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                if (Settings.System.canWrite(getApplicationContext()))
+                {
+                    return true;
+                }
+                else
+                {
+                    // We don't have the proper permissions, ask the user to give it to us
+                    showDialogWriteSettingsForScreenRotation();
+                    return false;
+                }
+            }
+        });
+
     }
+
+
 
     @Override
     protected void onPostResume()
@@ -133,6 +153,29 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
     }
+
+    /**
+     *
+     */
+    private void showDialogWriteSettingsForScreenRotation()
+    {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this, R.style.AppTheme_AlertDialog);
+        builder.setCancelable(true)
+                .setIcon(R.drawable.ic_screen_rotation)
+                .setTitle(R.string.app_name)
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        builder.setMessage(R.string.screen_rotation_permission_alert_dialog_message);
+        builder.setPositiveButton(R.string.settings, (dialog, which) ->
+                // Launch system UI to manage "write settings" permission for this application
+                startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        .setData(Uri.parse("package:" + getPackageName())))
+        );
+
+        builder.create().show();
+    }
+
 }
 
 
