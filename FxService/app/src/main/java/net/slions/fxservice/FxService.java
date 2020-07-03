@@ -916,18 +916,18 @@ public class FxService extends AccessibilityService
         double roll = Math.toDegrees(orientationAngles[2]);
 
         if (Settings.System.canWrite(this)) { // defensive
-            // Landscape detection
-            if (roll < -60) {
-                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_90);
-            } else if (roll > 60) {
-                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_270);
-            }
 
             // Portrait detection
-            if (pitch < -60) {
+            if (pitch < -50) {
                 Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_0);
-            } else if (pitch > 60) {
+            } else if (pitch > 50) {
                 Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_180);
+            }
+            // Landscape detection
+            else if (roll < -50) {
+                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_90);
+            } else if (roll > 50) {
+                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_270);
             }
         }
 
