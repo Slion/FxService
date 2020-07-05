@@ -17,8 +17,10 @@ package net.slions.fxservice;
 import android.accessibilityservice.AccessibilityService;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -49,13 +51,14 @@ import android.widget.Toast;
 // For aut-sync scheduler
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 
 import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
 
 public class FxService extends AccessibilityService
         implements SensorEventListener,
-         SharedPreferences.OnSharedPreferenceChangeListener
+        SharedPreferences.OnSharedPreferenceChangeListener
 {
 
     private AlertDialog iLockAlertDialog;
@@ -88,6 +91,36 @@ public class FxService extends AccessibilityService
     private final int KScreenFilterBrightnessMin = 25;
     private final int KScreenFilterBrightnessMax = 255;
 
+    // Used to unable screen wake from proximity sensor only if locked by case close
+    private boolean iProximitySensorArmed = false;
+
+
+    class BroadcastListener extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            //Log.d("FxService",intent.getAction());
+
+            if (Objects.equals(intent.getAction(), Intent.ACTION_USER_PRESENT)) {
+                // Device was unlocked, disarm proximity sensor
+                iProximitySensorArmed = false;
+            }
+
+            /*
+            if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_ON)) {
+                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+                PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+
+                final boolean isProtected = keyguardManager.isKeyguardSecure();
+                final boolean isLocked = keyguardManager.isDeviceLocked();
+                final boolean isInteractive = powerManager.isInteractive();
+            }
+            */
+        }
+    }
+
+    private BroadcastListener iBroadcastListener = new BroadcastListener();
 
     //ArrayList<SensorEvent> iLightSensorSamples = new ArrayList<SensorEvent>();
 
@@ -190,6 +223,11 @@ public class FxService extends AccessibilityService
         // Get an instance of the sensor manager.
         iSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        //filter.addAction(Intent.ACTION_USER_UNLOCKED);
+
+        registerReceiver(iBroadcastListener, filter);
 
         // Create an overlay
         setupColorFilter();
@@ -736,6 +774,8 @@ public class FxService extends AccessibilityService
                         iWakeLockProximityScreenOff.acquire(delayInMs+1000);
                         // Delayed screen lock
                         iHandler.postDelayed(iLockScreenCallback, delayInMs);
+                        //
+                        iProximitySensorArmed = true;
                     }
                 }
 
@@ -759,6 +799,8 @@ public class FxService extends AccessibilityService
                     {
                         Toast.makeText(this, R.string.toast_screen_lock_abort, Toast.LENGTH_SHORT).show();
                     }
+
+                    iProximitySensorArmed = false;
                 }
 
                 // Consume both up and down events to prevent the system doing anything with those
@@ -873,7 +915,7 @@ public class FxService extends AccessibilityService
                 break;
             case Sensor.TYPE_PROXIMITY:
                 // If no proximity and previously proximity then wake up the screen for defined time
-                if (currentValue>0 && iLastProximityValue == 0)
+                if (currentValue>0 && iLastProximityValue == 0 && iProximitySensorArmed)
                 {
                     // To be safe just cancel possible callbacks
                     iHandler.removeCallbacks(iLockScreenCallback);
