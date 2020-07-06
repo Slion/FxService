@@ -162,6 +162,39 @@
             app:iconSpaceReserved="false"
             />
 
+        <SeekBarPreference
+            app:key="@string/pref_key_screen_rotation_delay"
+            app:title="@string/pref_title_screen_rotation_delay"
+            app:summary="@string/pref_summary_screen_rotation_delay"
+            app:defaultValue="25"
+            app:min="0"
+            android:max="200"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:key="@string/pref_key_screen_rotation_portrait_angle"
+            app:title="@string/pref_title_screen_rotation_portrait_angle"
+            app:summary="@string/pref_summary_screen_rotation_portrait_angle"
+            app:defaultValue="50"
+            app:min="15"
+            android:max="75"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SeekBarPreference
+            app:key="@string/pref_key_screen_rotation_landscape_angle"
+            app:title="@string/pref_title_screen_rotation_landscape_angle"
+            app:summary="@string/pref_summary_screen_rotation_landscape_angle"
+            app:defaultValue="50"
+            app:min="15"
+            android:max="75"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            />
+
     </net.slions.fxservice.FxPreferenceCategory>
 
 

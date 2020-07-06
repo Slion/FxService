@@ -72,6 +72,9 @@
     <string name="pref_key_keyboard_key_up_vibration_duration">pref_key_keyboard_key_up_vibration_duration</string>
     <string name="pref_key_keyboard_key_up_vibration_amplitude">pref_key_keyboard_key_up_vibration_amplitude</string>
     <string name="pref_key_screen_rotation_auto">pref_key_screen_rotation_auto</string>
+    <string name="pref_key_screen_rotation_delay">pref_key_screen_rotation_delay</string>
+    <string name="pref_key_screen_rotation_portrait_angle">pref_key_screen_rotation_portrait_angle</string>
+    <string name="pref_key_screen_rotation_landscape_angle">pref_key_screen_rotation_landscape_angle</string>
 
     <!-- Summaries -->
     <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
@@ -136,6 +139,12 @@
 
     <!-- Preferences: Screen rotation -->
     <string name="pref_title_screen_rotation_auto">Automatic screen rotation</string>
+    <string name="pref_title_screen_rotation_delay">Delay in centiseconds</string>
+    <string name="pref_summary_screen_rotation_delay">Increase for more stability, decrease for more reactivity.</string>
+    <string name="pref_title_screen_rotation_portrait_angle">Portrait angle</string>
+    <string name="pref_summary_screen_rotation_portrait_angle">Pitch angle from which we should switch to portrait.</string>
+    <string name="pref_title_screen_rotation_landscape_angle">Landscape angle</string>
+    <string name="pref_summary_screen_rotation_landscape_angle">Roll angle from which we should switch to landscape.</string>
 
     <!-- Preferences: Filters -->
     <string name="pref_title_filter_open_case">Case open (Fn+F4)</string>

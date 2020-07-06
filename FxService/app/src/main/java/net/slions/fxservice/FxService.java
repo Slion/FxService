@@ -316,9 +316,25 @@ public class FxService extends AccessibilityService
             // Something changed in our screen rotation setup
             setupAccelerometer();
             setupMagnetometer();
+            setupRotation();
+        }
+        else if (key.startsWith("pref_key_screen_rotation"))
+        {
+            // Update screen rotation settings
+            setupRotation();
         }
     }
 
+    int iRotationDelay = 250;
+    double iRotationPortraitAngle = Math.toRadians(50);
+    double iRotationLandscapeAngle = Math.toRadians(50);
+
+    void setupRotation()
+    {
+        iRotationDelay = FxSettings.getPrefInt(this, R.string.pref_key_screen_rotation_delay,25) * 10;
+        iRotationPortraitAngle = Math.toRadians(FxSettings.getPrefInt(this, R.string.pref_key_screen_rotation_portrait_angle,50));
+        iRotationLandscapeAngle = Math.toRadians(FxSettings.getPrefInt(this, R.string.pref_key_screen_rotation_landscape_angle,50));
+    }
 
     void scheduleNextAutoSync()
     {
@@ -973,8 +989,7 @@ public class FxService extends AccessibilityService
         else if (iTargetRotation != aRequestedRotation) {
             cancelRotation();
             iTargetRotation = aRequestedRotation;
-            // TODO: configure that delay
-            iHandler.postDelayed(iAutoRotateCallback, 500);
+            iHandler.postDelayed(iAutoRotateCallback, iRotationDelay);
         }
     }
 
@@ -994,6 +1009,7 @@ public class FxService extends AccessibilityService
         SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading);
         SensorManager.getOrientation(rotationMatrix, orientationAngles);
 
+        /*
         double azimuth = Math.toDegrees(orientationAngles[0]);
         // Pitch is used for portrait detection
         // Pitch -90 is head down, 90 is head up
@@ -1002,23 +1018,31 @@ public class FxService extends AccessibilityService
         // Roll -90 is left side down, +90 is right side down
         double roll = Math.toDegrees(orientationAngles[2]);
 
-        if (Settings.System.canWrite(this)) { // defensive
+        Log.d("FxService:",  azimuth + "," + pitch +"," + roll);
+        */
 
+        // Pitch is used for portrait detection
+        // Pitch -90 is head down, +90 is head up
+        double pitchInRadians = orientationAngles[1];
+        // Roll is used for landscape detection
+        // Roll -90 is left side down, +90 is right side down
+        double rollInRadians = orientationAngles[2];
+
+
+        if (Settings.System.canWrite(this)) { // defensive
             // Portrait detection
-            if (pitch < -50) {
+            if (pitchInRadians < -iRotationPortraitAngle) {
                 scheduleRotationIfNeeded(Surface.ROTATION_0);
-            } else if (pitch > 50) {
+            } else if (pitchInRadians > iRotationPortraitAngle) {
                 scheduleRotationIfNeeded(Surface.ROTATION_180);
             }
             // Landscape detection
-            else if (roll < -50) {
+            else if (rollInRadians < -iRotationLandscapeAngle) {
                 scheduleRotationIfNeeded(Surface.ROTATION_90);
-            } else if (roll > 50) {
+            } else if (rollInRadians > iRotationLandscapeAngle) {
                 scheduleRotationIfNeeded(Surface.ROTATION_270);
             }
         }
-
-        //Log.d("FxService:",  azimuth + "," + pitch +"," + roll);
 
         // "mOrientationAngles" now has up-to-date information.
     }
