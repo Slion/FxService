@@ -99,24 +99,11 @@ public class FxService extends AccessibilityService
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
             //Log.d("FxService",intent.getAction());
-
             if (Objects.equals(intent.getAction(), Intent.ACTION_USER_PRESENT)) {
                 // Device was unlocked, disarm proximity sensor
                 iProximitySensorArmed = false;
             }
-
-            /*
-            if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_ON)) {
-                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-                PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-
-                final boolean isProtected = keyguardManager.isKeyguardSecure();
-                final boolean isLocked = keyguardManager.isDeviceLocked();
-                final boolean isInteractive = powerManager.isInteractive();
-            }
-            */
         }
     }
 
@@ -209,6 +196,19 @@ public class FxService extends AccessibilityService
         }
     };
 
+    // Used to delay lock screen action
+    Runnable iAutoRotateCallback = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            // Time to apply our rotation
+            Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, iTargetRotation);
+            // Tell that we don't have any pending auto-rotate callback
+            iTargetRotation = KNoPendingRotation;
+        }
+    };
+
 
     Vibrator iVibrator;
 
@@ -257,6 +257,7 @@ public class FxService extends AccessibilityService
     {
         super.onDestroy();
 
+        unregisterReceiver(iBroadcastListener);
         cancelAutoSync();
         closeLightSensor();
         closeProximitySensor();
@@ -941,10 +942,54 @@ public class FxService extends AccessibilityService
         }
     }
 
+    final static int KNoPendingRotation = -1;
+    int iTargetRotation = KNoPendingRotation;
+
+
+    private void cancelRotation() {
+        iHandler.removeCallbacks(iAutoRotateCallback);
+        iTargetRotation = KNoPendingRotation;
+    }
+
+    /**
+     *
+     * @param aRequestedRotation
+     */
+    private void scheduleRotationIfNeeded(int aRequestedRotation) {
+
+        int rotation = Surface.ROTATION_0;
+        try {
+            rotation = Settings.System.getInt(getContentResolver(), Settings.System.USER_ROTATION);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // System is already in request rotation
+        if (rotation == aRequestedRotation) {
+            // Just cancel any pending rotation then
+            cancelRotation();
+        }
+        // If we have not already scheduled this rotation, do it now
+        else if (iTargetRotation != aRequestedRotation) {
+            cancelRotation();
+            iTargetRotation = aRequestedRotation;
+            // TODO: configure that delay
+            iHandler.postDelayed(iAutoRotateCallback, 500);
+        }
+    }
+
     // Compute the three orientation angles based on the most recent readings from
     // the device's accelerometer and magnetometer.
     // See: https://developer.android.com/guide/topics/sensors/sensors_position#sensors-pos-orient
     public void updateOrientationAngles() {
+        //
+        if (isDeviceLocked())
+        {
+            // Don't bother doing rotation if the screen is locked one way or another
+            //Log.d("FxService", "Device Locked, no rotation");
+            return;
+        }
+
         // Update rotation matrix, which is needed to update orientation angles.
         SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading);
         SensorManager.getOrientation(rotationMatrix, orientationAngles);
@@ -961,15 +1006,15 @@ public class FxService extends AccessibilityService
 
             // Portrait detection
             if (pitch < -50) {
-                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_0);
+                scheduleRotationIfNeeded(Surface.ROTATION_0);
             } else if (pitch > 50) {
-                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_180);
+                scheduleRotationIfNeeded(Surface.ROTATION_180);
             }
             // Landscape detection
             else if (roll < -50) {
-                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_90);
+                scheduleRotationIfNeeded(Surface.ROTATION_90);
             } else if (roll > 50) {
-                Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, Surface.ROTATION_270);
+                scheduleRotationIfNeeded(Surface.ROTATION_270);
             }
         }
 
@@ -1019,7 +1064,6 @@ public class FxService extends AccessibilityService
 
     private void lockDeviceUponKeyboardClose()
     {
-        KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         if (isDeviceLocked())
         {
             // Device is already locked
