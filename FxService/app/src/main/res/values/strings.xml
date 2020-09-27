@@ -72,9 +72,14 @@
     <string name="pref_key_keyboard_key_up_vibration_duration">pref_key_keyboard_key_up_vibration_duration</string>
     <string name="pref_key_keyboard_key_up_vibration_amplitude">pref_key_keyboard_key_up_vibration_amplitude</string>
     <string name="pref_key_screen_rotation_auto">pref_key_screen_rotation_auto</string>
+    <string name="pref_key_screen_rotation_keyboard_landscape">pref_key_screen_rotation_keyboard_landscape</string>
+    <string name="pref_key_screen_rotation_keyboard_landscape_locked">pref_key_screen_rotation_keyboard_landscape_locked</string>
+    <string name="pref_key_screen_rotation_keyboard_portrait">pref_key_screen_rotation_keyboard_portrait</string>
+    <string name="pref_key_screen_rotation_keyboard_portrait_locked">pref_key_screen_rotation_keyboard_portrait_locked</string>
     <string name="pref_key_screen_rotation_delay">pref_key_screen_rotation_delay</string>
     <string name="pref_key_screen_rotation_portrait_angle">pref_key_screen_rotation_portrait_angle</string>
     <string name="pref_key_screen_rotation_landscape_angle">pref_key_screen_rotation_landscape_angle</string>
+    <string name="pref_key_debug_keyboard_show_status_change">pref_key_debug_keyboard_show_status_change</string>
 
     <!-- Summaries -->
     <string name="pref_summary_filters">Filter out selected events thus preventing side effects in focused app.</string>
@@ -90,6 +95,7 @@
     <string name="pref_summary_auto_sync">Enable auto-sync schedule to save battery power.</string>
     <string name="pref_summary_keyboard">Customise your keyboard behaviour.</string>
     <string name="pref_summary_screen_rotation">Override system screen rotation.</string>
+    <string name="pref_summary_debug">Some debug options.</string>
 
     <!-- Categories Titles -->
     <string name="pref_title_accessibility_service">Accessibility service</string>
@@ -102,6 +108,7 @@
     <string name="pref_category_auto_sync">Auto-sync</string>
     <string name="pref_category_keyboard">Keyboard</string>
     <string name="pref_category_screen_rotation">Screen rotation</string>
+    <string name="pref_category_debug">Debug</string>
 
     <!-- Preferences: Case close  -->
     <string name="pref_title_case_close_delay_in_seconds">Lock screen after n seconds</string>
@@ -139,6 +146,10 @@
 
     <!-- Preferences: Screen rotation -->
     <string name="pref_title_screen_rotation_auto">Automatic screen rotation</string>
+    <string name="pref_title_screen_rotation_keyboard_landscape">Keyboard opening landscape switch</string>
+    <string name="pref_title_screen_rotation_keyboard_landscape_locked">Keyboard opened landscape locked</string>
+    <string name="pref_title_screen_rotation_keyboard_portrait">Keyboard closing portrait switch</string>
+    <string name="pref_title_screen_rotation_keyboard_portrait_locked">Keyboard closed portrait locked</string>
     <string name="pref_title_screen_rotation_delay">Delay in centiseconds</string>
     <string name="pref_summary_screen_rotation_delay">Increase for more stability, decrease for more reactivity.</string>
     <string name="pref_title_screen_rotation_portrait_angle">Portrait angle</string>
@@ -151,6 +162,9 @@
     <string name="pref_title_filter_close_case">Case close (Fn+F3)</string>
     <string name="pref_title_filter_open_keyboard">Keyboard open (Fn+F6)</string>
     <string name="pref_title_filter_close_keyboard">Keyboard close (Fn+F5)</string>
+
+    <!-- Preferences: Debug -->
+    <string name="pref_title_debug_keyboard_show_status_change">Show keyboard status change</string>
 
     <!-- Dialog -->
     <string name="dialog_lock_title">"Fx Service"</string>
@@ -167,6 +181,7 @@
     <string name="toast_light_sensor_disabled">"Fx Service: Light sensor disabled"</string>
     <string name="toast_auto_sync_enabled">"Fx Service: Auto-sync enabled"</string>
     <string name="toast_auto_sync_disabled">"Fx Service: Auto-sync disabled"</string>
-
+    <string name="toast_hardware_keyboard_opened">"Hardware keyboard opened"</string>
+    <string name="toast_hardware_keyboard_closed">"Hardware keyboard closed"</string>
 
 </resources>

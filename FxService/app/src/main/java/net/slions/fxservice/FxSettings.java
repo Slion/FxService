@@ -39,6 +39,32 @@ public class FxSettings
         return getPrefBoolean(aContext,R.string.pref_key_screen_rotation_auto,false);
     }
 
+    static boolean isScreenRotationKeyboardLandscape(Context aContext)
+    {
+        return getPrefBoolean(aContext,R.string.pref_key_screen_rotation_keyboard_landscape,true);
+    }
+
+    static boolean isScreenRotationKeyboardLandscapeLocked(Context aContext)
+    {
+        return getPrefBoolean(aContext,R.string.pref_key_screen_rotation_keyboard_landscape_locked,true);
+    }
+
+    static boolean isScreenRotationKeyboardPortrait(Context aContext)
+    {
+        return getPrefBoolean(aContext,R.string.pref_key_screen_rotation_keyboard_portrait,true);
+    }
+
+    static boolean isScreenRotationKeyboardPortraitLocked(Context aContext)
+    {
+        return getPrefBoolean(aContext,R.string.pref_key_screen_rotation_keyboard_portrait_locked,false);
+    }
+
+    static boolean showKeyboardStatusChange(Context aContext)
+    {
+        return getPrefBoolean(aContext,R.string.pref_key_debug_keyboard_show_status_change,false);
+    }
+
+
     // Fetch specified boolean preference
     static boolean getPrefBoolean(Context aContext, int aKey, Boolean aDefault)
     {

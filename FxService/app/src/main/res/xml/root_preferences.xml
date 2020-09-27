@@ -162,7 +162,40 @@
             app:iconSpaceReserved="false"
             />
 
+        <SwitchPreferenceCompat
+            app:dependency="@string/pref_key_screen_rotation_auto"
+            app:key="@string/pref_key_screen_rotation_keyboard_landscape"
+            app:title="@string/pref_title_screen_rotation_keyboard_landscape"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SwitchPreferenceCompat
+            app:dependency="@string/pref_key_screen_rotation_keyboard_landscape"
+            app:key="@string/pref_key_screen_rotation_keyboard_landscape_locked"
+            app:title="@string/pref_title_screen_rotation_keyboard_landscape_locked"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SwitchPreferenceCompat
+            app:dependency="@string/pref_key_screen_rotation_auto"
+            app:key="@string/pref_key_screen_rotation_keyboard_portrait"
+            app:title="@string/pref_title_screen_rotation_keyboard_portrait"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            />
+
+        <SwitchPreferenceCompat
+            app:dependency="@string/pref_key_screen_rotation_keyboard_portrait"
+            app:key="@string/pref_key_screen_rotation_keyboard_portrait_locked"
+            app:title="@string/pref_title_screen_rotation_keyboard_portrait_locked"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
+
         <SeekBarPreference
+            app:dependency="@string/pref_key_screen_rotation_auto"
             app:key="@string/pref_key_screen_rotation_delay"
             app:title="@string/pref_title_screen_rotation_delay"
             app:summary="@string/pref_summary_screen_rotation_delay"
@@ -174,6 +207,7 @@
             />
 
         <SeekBarPreference
+            app:dependency="@string/pref_key_screen_rotation_auto"
             app:key="@string/pref_key_screen_rotation_portrait_angle"
             app:title="@string/pref_title_screen_rotation_portrait_angle"
             app:summary="@string/pref_summary_screen_rotation_portrait_angle"
@@ -185,6 +219,7 @@
             />
 
         <SeekBarPreference
+            app:dependency="@string/pref_key_screen_rotation_auto"
             app:key="@string/pref_key_screen_rotation_landscape_angle"
             app:title="@string/pref_title_screen_rotation_landscape_angle"
             app:summary="@string/pref_summary_screen_rotation_landscape_angle"
@@ -384,6 +419,21 @@
             />
 
 
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+    <net.slions.fxservice.FxPreferenceCategory app:title="@string/pref_category_debug"
+        app:summary="@string/pref_summary_debug"
+        app:iconSpaceReserved="false"
+        app:dependency="@string/pref_key_accessibility_service"
+        app:icon="@drawable/ic_debug">
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_key_debug_keyboard_show_status_change"
+            app:title="@string/pref_title_debug_keyboard_show_status_change"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            />
 
     </net.slions.fxservice.FxPreferenceCategory>
 

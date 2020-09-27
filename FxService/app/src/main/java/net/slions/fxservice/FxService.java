@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -52,7 +53,6 @@ import android.widget.Toast;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-
 
 import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
 
@@ -90,10 +90,16 @@ public class FxService extends AccessibilityService
     private final int KFxTecProOneBrightnessMax = 255;
     private final int KScreenFilterBrightnessMin = 25;
     private final int KScreenFilterBrightnessMax = 255;
-
     // Used to unable screen wake from proximity sensor only if locked by case close
     private boolean iProximitySensorArmed = false;
-
+    // Well... you know what that it :)
+    Vibrator iVibrator;
+    // Rotation management
+    int iRotationDelay = 250;
+    double iRotationPortraitAngle = Math.toRadians(50);
+    double iRotationLandscapeAngle = Math.toRadians(50);
+    // Hardware keyboard status
+    private int iHardKeyboardHidden = Configuration.HARDKEYBOARDHIDDEN_UNDEFINED;
 
     class BroadcastListener extends BroadcastReceiver {
 
@@ -110,8 +116,6 @@ public class FxService extends AccessibilityService
     private BroadcastListener iBroadcastListener = new BroadcastListener();
 
     //ArrayList<SensorEvent> iLightSensorSamples = new ArrayList<SensorEvent>();
-
-
     //
     FrameLayout mLayout;
     //View mColorLayout;
@@ -209,9 +213,6 @@ public class FxService extends AccessibilityService
         }
     };
 
-
-    Vibrator iVibrator;
-
     // From AccessibilityService
     // Called whenever our service is connected
     @Override
@@ -248,6 +249,8 @@ public class FxService extends AccessibilityService
         Toast.makeText(this, R.string.toast_service_connected, Toast.LENGTH_SHORT).show();
 
         iVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Save that so that we can compare it upon resource change
+        iHardKeyboardHidden = getResources().getConfiguration().hardKeyboardHidden;
     }
 
     // From Service
@@ -267,6 +270,7 @@ public class FxService extends AccessibilityService
         iWakeLockProximityScreenOff = null;
         iSensorManager = null;
         iVibrator = null;
+        iHardKeyboardHidden = Configuration.HARDKEYBOARDHIDDEN_UNDEFINED;
         Toast.makeText(this, R.string.toast_service_destroyed, Toast.LENGTH_SHORT).show();
     }
 
@@ -281,6 +285,50 @@ public class FxService extends AccessibilityService
         Toast.makeText(this, R.string.toast_service_interrupted, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * We only realised late that hardware keyboard status could be checked thus.
+     * Consider moving legacy stuff from keyboard handler in there?
+     * @param newConfig
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+
+        //Toast.makeText(FxService.this, "Config changed", Toast.LENGTH_SHORT).show();
+
+        // Check if hardware keyboard status has changed
+        if (newConfig.hardKeyboardHidden != iHardKeyboardHidden)
+        {
+            iHardKeyboardHidden = newConfig.hardKeyboardHidden;
+
+            // Hardware keyboard status changed
+            if (isKeyboardClosed())
+            {
+                // Keyboard was closed
+                // Show debug message if needed
+                if (FxSettings.showKeyboardStatusChange(this)) {
+                    Toast.makeText(FxService.this, R.string.toast_hardware_keyboard_closed, Toast.LENGTH_SHORT).show();
+                }
+
+                // Change screen rotation if needed
+                if (Settings.System.canWrite(this) && FxSettings.isScreenRotationAuto(this) && FxSettings.isScreenRotationKeyboardPortrait(this)) {
+                    scheduleRotationIfNeeded(Surface.ROTATION_0);
+                }
+            }
+            else if (isKeyboardOpened())
+            {
+                // Keyboard was opened
+                // Show debug message if needed
+                if (FxSettings.showKeyboardStatusChange(this)) {
+                    Toast.makeText(FxService.this, R.string.toast_hardware_keyboard_opened, Toast.LENGTH_SHORT).show();
+                }
+
+                // Change screen rotation if needed
+                if (Settings.System.canWrite(this) && FxSettings.isScreenRotationAuto(this) && FxSettings.isScreenRotationKeyboardLandscape(this)) {
+                    scheduleRotationIfNeeded(Surface.ROTATION_90);
+                }
+            }
+        }
+    }
 
     // Receive preference change notifications
     @Override
@@ -325,10 +373,6 @@ public class FxService extends AccessibilityService
         }
     }
 
-    int iRotationDelay = 250;
-    double iRotationPortraitAngle = Math.toRadians(50);
-    double iRotationLandscapeAngle = Math.toRadians(50);
-
     void setupRotation()
     {
         iRotationDelay = FxSettings.getPrefInt(this, R.string.pref_key_screen_rotation_delay,25) * 10;
@@ -363,6 +407,16 @@ public class FxService extends AccessibilityService
             long delay = ChronoUnit.MILLIS.between(now, start);
             iHandler.postDelayed(iAutoSyncTurnOnCallback, delay);
         }
+    }
+
+    boolean isKeyboardOpened()
+    {
+        return iHardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO;
+    }
+
+    boolean isKeyboardClosed()
+    {
+        return iHardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES;
     }
 
     boolean isWithinAutoSyncSchedule()
@@ -1030,8 +1084,14 @@ public class FxService extends AccessibilityService
 
 
         if (Settings.System.canWrite(this)) { // defensive
+            if (isKeyboardClosed() && FxSettings.isScreenRotationKeyboardPortraitLocked(this)) {
+                scheduleRotationIfNeeded(Surface.ROTATION_0);
+            }
+            else if (isKeyboardOpened() && FxSettings.isScreenRotationKeyboardLandscapeLocked(this)) {
+                scheduleRotationIfNeeded(Surface.ROTATION_90);
+            }
             // Portrait detection
-            if (pitchInRadians < -iRotationPortraitAngle) {
+            else if (pitchInRadians < -iRotationPortraitAngle) {
                 scheduleRotationIfNeeded(Surface.ROTATION_0);
             } else if (pitchInRadians > iRotationPortraitAngle) {
                 scheduleRotationIfNeeded(Surface.ROTATION_180);
@@ -1134,7 +1194,5 @@ public class FxService extends AccessibilityService
             // Perform lock on the spot
             performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
         }
-
     }
-
 }
