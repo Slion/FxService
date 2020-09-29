@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <net.slions.fxservice.FxPreferenceCategory
+        app:icon="@drawable/ic_case_cover"
+        app:iconSpaceReserved="false"
+        app:summary="@string/pref_summary_case_close"
+        app:title="@string/pref_category_case_close">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_case_close_lock_screen"
+            app:title="@string/pref_title_case_close_lock_screen" />
+
+        <SeekBarPreference
+            android:max="9"
+            app:defaultValue="0"
+            app:dependency="@string/pref_key_case_close_lock_screen"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_case_close_delay_in_minutes"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/pref_title_case_close_delay_in_minutes" />
+
+        <SeekBarPreference
+            android:max="59"
+            app:defaultValue="0"
+            app:dependency="@string/pref_key_case_close_lock_screen"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_case_close_delay_in_seconds"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/pref_title_case_close_delay_in_seconds" />
+    </net.slions.fxservice.FxPreferenceCategory>
+
+    <net.slions.fxservice.FxPreferenceCategory
+        app:icon="@drawable/ic_case_cover_open"
+        app:iconSpaceReserved="false"
+        app:summary="@string/pref_summary_proximity_sensor"
+        app:title="@string/pref_category_proximity_sensor">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_proximity_wake_up"
+            app:title="@string/pref_title_proximity_wake_up" />
+
+        <SeekBarPreference
+            android:max="60"
+            app:defaultValue="5"
+            app:dependency="@string/pref_key_proximity_wake_up"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_proximity_wake_up_timeout"
+            app:min="1"
+            app:showSeekBarValue="true"
+            app:title="@string/pref_title_proximity_wake_up_timeout" />
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
+
+</PreferenceScreen>

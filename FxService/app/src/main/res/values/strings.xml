@@ -89,6 +89,7 @@
     <string name="pref_summary_screen_filter_disable_touch_screen">Your touch screen won\'t be responsive while screen filter overlay is on.</string>
     <string name="pref_summary_screen_filter_color">Ctrl + Fn + Up or Down</string>
     <string name="pref_summary_case_close">Screen will go off as soon as you close your case and your device will be locked after the specified timeout.</string>
+    <string name="pref_summary_smart_case">Configure smart case actions.</string>
     <string name="pref_summary_keyboard_close">Whenever you close your keyboard, your device will be locked after the specified timeout.</string>
     <string name="pref_summary_proximity_sensor">Screen will turn on as soon as you open your case.</string>
     <string name="pref_summary_light_sensor">Screen brightness will be adjusted according to ambient light levels.</string>
@@ -102,6 +103,7 @@
     <string name="pref_category_filters">Filters</string>
     <string name="pref_category_screen_filter">Screen filter</string>
     <string name="pref_category_case_close">Case close</string>
+    <string name="pref_category_smart_case">Smart case</string>
     <string name="pref_category_keyboard_close">Keyboard close</string>
     <string name="pref_category_proximity_sensor">Proximity sensor</string>
     <string name="pref_category_light_sensor">Light sensor</string>
