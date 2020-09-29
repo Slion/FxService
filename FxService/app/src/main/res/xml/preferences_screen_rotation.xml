@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <net.slions.fxservice.FxPreferenceCategory
+        app:icon="@drawable/ic_screen_rotation"
+        app:iconSpaceReserved="false"
+        app:summary="@string/pref_summary_screen_rotation"
+        app:title="@string/pref_category_screen_rotation">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_auto"
+            app:title="@string/pref_title_screen_rotation_auto" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="@string/pref_key_screen_rotation_auto"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_keyboard_landscape"
+            app:title="@string/pref_title_screen_rotation_keyboard_landscape" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="@string/pref_key_screen_rotation_keyboard_landscape"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_keyboard_landscape_locked"
+            app:title="@string/pref_title_screen_rotation_keyboard_landscape_locked" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="@string/pref_key_screen_rotation_auto"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_keyboard_portrait"
+            app:title="@string/pref_title_screen_rotation_keyboard_portrait" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:dependency="@string/pref_key_screen_rotation_keyboard_portrait"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_keyboard_portrait_locked"
+            app:title="@string/pref_title_screen_rotation_keyboard_portrait_locked" />
+
+        <SeekBarPreference
+            android:max="200"
+            app:defaultValue="25"
+            app:dependency="@string/pref_key_screen_rotation_auto"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_delay"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:summary="@string/pref_summary_screen_rotation_delay"
+            app:title="@string/pref_title_screen_rotation_delay" />
+
+        <SeekBarPreference
+            android:max="75"
+            app:defaultValue="50"
+            app:dependency="@string/pref_key_screen_rotation_auto"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_portrait_angle"
+            app:min="15"
+            app:showSeekBarValue="true"
+            app:summary="@string/pref_summary_screen_rotation_portrait_angle"
+            app:title="@string/pref_title_screen_rotation_portrait_angle" />
+
+        <SeekBarPreference
+            android:max="75"
+            app:defaultValue="50"
+            app:dependency="@string/pref_key_screen_rotation_auto"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_screen_rotation_landscape_angle"
+            app:min="15"
+            app:showSeekBarValue="true"
+            app:summary="@string/pref_summary_screen_rotation_landscape_angle"
+            app:title="@string/pref_title_screen_rotation_landscape_angle" />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
+</PreferenceScreen>
