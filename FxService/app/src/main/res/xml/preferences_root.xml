@@ -10,49 +10,22 @@
         app:summary="@string/pref_summary_accessibility_service"
         app:title="@string/pref_title_accessibility_service" />
 
-    <net.slions.fxservice.FxPreferenceCategory
+
+    <Preference
         app:dependency="@string/pref_key_accessibility_service"
+        app:fragment="net.slions.fxservice.FragmentSettingsScreenFilter"
         app:icon="@drawable/ic_screen_filter"
-        app:iconSpaceReserved="false"
         app:summary="@string/pref_summary_category_screen_filter"
-        app:title="@string/pref_category_screen_filter">
+        app:title="@string/pref_category_screen_filter" />
 
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_screen_filter"
-            app:summary="@string/pref_summary_screen_filter"
-            app:title="@string/pref_title_screen_filter" />
+    <Preference
+        app:dependency="@string/pref_key_accessibility_service"
+        app:fragment="net.slions.fxservice.FragmentSettingsScreenRotation"
+        app:icon="@drawable/ic_screen_rotation"
+        app:title="@string/pref_category_screen_rotation"
+        app:summary="@string/pref_summary_screen_rotation"
+        />
 
-        <SeekBarPreference
-            android:max="255"
-            app:defaultValue="150"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_screen_filter_brightness"
-            app:min="25"
-            app:showSeekBarValue="true"
-            app:summary="@string/pref_summary_screen_filter_color"
-            app:title="@string/pref_title_screen_filter_brightness"
-            app:updatesContinuously="true" />
-
-        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
-            android:defaultValue="@color/colorDefaultFilter"
-            android:key="@string/pref_key_screen_filter_color"
-            android:title="@string/pref_title_screen_filter_color"
-            app:cpv_colorShape="circle"
-            app:cpv_dialogType="preset"
-            app:cpv_showAlphaSlider="true"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_screen_filter_disable_touch_screen"
-            app:summary="@string/pref_summary_screen_filter_disable_touch_screen"
-            app:title="@string/pref_title_screen_filter_disable_touch_screen" />
-
-
-    </net.slions.fxservice.FxPreferenceCategory>
 
     <net.slions.fxservice.FxPreferenceCategory
         app:dependency="@string/pref_key_accessibility_service"
@@ -137,15 +110,6 @@
             app:showSeekBarValue="true"
             app:title="@string/pref_title_proximity_wake_up_timeout" />
     </net.slions.fxservice.FxPreferenceCategory>
-
-    <Preference
-        app:dependency="@string/pref_key_accessibility_service"
-        app:fragment="net.slions.fxservice.FragmentSettingsScreenRotation"
-        app:icon="@drawable/ic_screen_rotation"
-        app:title="@string/pref_category_screen_rotation"
-        app:summary="@string/pref_summary_screen_rotation"
-    />
-
 
     <net.slions.fxservice.FxPreferenceCategory
         app:dependency="@string/pref_key_accessibility_service"
