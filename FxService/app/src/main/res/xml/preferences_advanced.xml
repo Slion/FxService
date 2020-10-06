@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <net.slions.fxservice.FxPreferenceCategory
+        app:icon="@drawable/ic_sync"
+        app:iconSpaceReserved="false"
+        app:summary="@string/pref_summary_auto_sync"
+        app:title="@string/pref_category_auto_sync">
+
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_auto_sync_scheduler"
+            app:title="@string/pref_title_auto_sync_scheduler" />
+
+        <SeekBarPreference
+            android:max="23"
+            app:defaultValue="8"
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_auto_sync_start"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/pref_title_auto_sync_start" />
+
+        <SeekBarPreference
+            android:max="23"
+            app:defaultValue="22"
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_auto_sync_end"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/pref_title_auto_sync_end" />
+
+        <SeekBarPreference
+            android:max="60"
+            app:defaultValue="5"
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_auto_sync_on_duration"
+            app:min="1"
+            app:showSeekBarValue="true"
+            app:title="@string/pref_title_auto_sync_on_duration" />
+
+        <SeekBarPreference
+            android:max="60"
+            app:defaultValue="15"
+            app:dependency="@string/pref_key_auto_sync_scheduler"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_auto_sync_off_duration"
+            app:min="1"
+            app:showSeekBarValue="true"
+            app:title="@string/pref_title_auto_sync_off_duration" />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
+    <net.slions.fxservice.FxPreferenceCategory
+        app:icon="@drawable/ic_error"
+        app:iconSpaceReserved="false"
+        app:summary="@string/pref_summary_filters"
+        app:title="@string/pref_category_filters">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_filter_close_case"
+            app:title="@string/pref_title_filter_close_case" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_filter_open_case"
+            app:title="@string/pref_title_filter_open_case" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_filter_close_keyboard"
+            app:title="@string/pref_title_filter_close_keyboard" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_filter_open_keyboard"
+            app:title="@string/pref_title_filter_open_keyboard" />
+
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+    <net.slions.fxservice.FxPreferenceCategory
+        app:icon="@drawable/ic_debug"
+        app:iconSpaceReserved="false"
+        app:summary="@string/pref_summary_debug"
+        app:title="@string/pref_category_debug">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="@string/pref_key_debug_keyboard_show_status_change"
+            app:title="@string/pref_title_debug_keyboard_show_status_change" />
+
+    </net.slions.fxservice.FxPreferenceCategory>
+
+
+</PreferenceScreen>

@@ -97,6 +97,7 @@
     <string name="pref_summary_keyboard">Customise your keyboard behaviour.</string>
     <string name="pref_summary_screen_rotation">Override system screen rotation.</string>
     <string name="pref_summary_debug">Some debug options.</string>
+    <string name="pref_summary_advanced">More advanced settings.</string>
 
     <!-- Categories Titles -->
     <string name="pref_title_accessibility_service">Accessibility service</string>
@@ -111,6 +112,7 @@
     <string name="pref_category_keyboard">Keyboard</string>
     <string name="pref_category_screen_rotation">Screen rotation</string>
     <string name="pref_category_debug">Debug</string>
+    <string name="pref_category_advanced">Advanced</string>
 
     <!-- Preferences: Case close  -->
     <string name="pref_title_case_close_delay_in_seconds">Lock screen after n seconds</string>
