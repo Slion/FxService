@@ -36,6 +36,7 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
+            app:icon="@drawable/ic_no_touch_input"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="@string/pref_key_screen_filter_disable_touch_screen"

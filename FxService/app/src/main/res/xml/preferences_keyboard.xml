@@ -34,7 +34,7 @@
 
         <SeekBarPreference
             android:max="100"
-            app:defaultValue="1"
+            app:defaultValue="10"
             app:iconSpaceReserved="false"
             app:key="@string/pref_key_keyboard_key_down_vibration_duration"
             app:min="0"
@@ -43,7 +43,7 @@
 
         <SeekBarPreference
             android:max="255"
-            app:defaultValue="1"
+            app:defaultValue="50"
             app:iconSpaceReserved="false"
             app:key="@string/pref_key_keyboard_key_down_vibration_amplitude"
             app:min="1"

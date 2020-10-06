@@ -24,7 +24,7 @@
     <!-- Tile Service-->
     <string name="app_name">Fx Service</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">OK</string>
+    <string name="ok">Ok</string>
     <string name="permission_alert_dialog_message">To allow the tile to change brightness mode, please open settings and grant modify system settings permission.</string>
     <string name="screen_rotation_permission_alert_dialog_message">To allow overriding screen rotation, please open settings and grant modify system settings permission.</string>
     <string name="setting_not_found_alert_dialog_message">Adaptive brightness setting not found; the device does not support such brightness mode. The application will not work: you can uninstall it.</string>
@@ -35,8 +35,7 @@
     <string name="settings_github_link">https://github.com/rascarlo/AdaptiveBrightnessTile</string>
     <string name="key_permission_modify_system_settings">key_permission_modify_system_settings</string>
     <string name="source_code">Source Code</string>
-
-
+    <string name="warning_touch_screen_disabled">WARNING: next time you enable screen overlay your touch screen will be disabled. Make sure you have a keyboard or mouse connected to your device as it will be the only way to operate it.\n\nTHIS MAY RENDER YOUR DEVICE UNUSABLE!</string>
 
     <string name="accessibility_service_description">Needs text input filtering to handle keyboard and case open and close events.</string>
     <string name="accessibility_service_summary">Advanced features for your F(x)tec Pro¹</string>
