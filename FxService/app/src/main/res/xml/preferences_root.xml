@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -34,75 +35,13 @@
         app:summary="@string/pref_summary_smart_case"
         />
 
-    <net.slions.fxservice.FxPreferenceCategory
+    <Preference
         app:dependency="@string/pref_key_accessibility_service"
-        app:icon="@drawable/ic_pro1_profile"
-        app:iconSpaceReserved="false"
-        app:summary="@string/pref_summary_keyboard_close"
-        app:title="@string/pref_category_keyboard_close">
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_keyboard_close_lock_screen"
-            app:title="@string/pref_title_case_close_lock_screen" />
-
-        <SeekBarPreference
-            android:max="59"
-            app:defaultValue="0"
-            app:dependency="@string/pref_key_keyboard_close_lock_screen"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_keyboard_close_delay_in_seconds"
-            app:min="0"
-            app:showSeekBarValue="true"
-            app:title="@string/pref_title_case_close_delay_in_seconds" />
-
-    </net.slions.fxservice.FxPreferenceCategory>
-
-    <net.slions.fxservice.FxPreferenceCategory
-        app:dependency="@string/pref_key_accessibility_service"
+        app:fragment="net.slions.fxservice.FragmentSettingsKeyboard"
         app:icon="@drawable/ic_keyboard"
-        app:iconSpaceReserved="false"
+        app:title="@string/pref_category_keyboard"
         app:summary="@string/pref_summary_keyboard"
-        app:title="@string/pref_category_keyboard">
-
-        <SeekBarPreference
-            android:max="100"
-            app:defaultValue="1"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_keyboard_key_down_vibration_duration"
-            app:min="0"
-            app:showSeekBarValue="true"
-            app:title="@string/pref_title_keyboard_key_down_vibration_duration" />
-
-        <SeekBarPreference
-            android:max="255"
-            app:defaultValue="1"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_keyboard_key_down_vibration_amplitude"
-            app:min="1"
-            app:showSeekBarValue="true"
-            app:title="@string/pref_title_keyboard_key_down_vibration_amplitude" />
-
-        <SeekBarPreference
-            android:max="100"
-            app:defaultValue="0"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_keyboard_key_up_vibration_duration"
-            app:min="0"
-            app:showSeekBarValue="true"
-            app:title="@string/pref_title_keyboard_key_up_vibration_duration" />
-
-        <SeekBarPreference
-            android:max="255"
-            app:defaultValue="1"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_keyboard_key_up_vibration_amplitude"
-            app:min="1"
-            app:showSeekBarValue="true"
-            app:title="@string/pref_title_keyboard_key_up_vibration_amplitude" />
-
-    </net.slions.fxservice.FxPreferenceCategory>
+        />
 
     <net.slions.fxservice.FxPreferenceCategory
         app:dependency="@string/pref_key_accessibility_service"
