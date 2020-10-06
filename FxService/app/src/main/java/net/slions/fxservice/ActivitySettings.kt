@@ -49,6 +49,8 @@ class ActivitySettings : AppCompatActivity(),
     override fun onSupportNavigateUp(): Boolean {
         if (supportFragmentManager.popBackStackImmediate()) {
             return true
+        } else {
+            finish()
         }
         return super.onSupportNavigateUp()
     }
@@ -108,7 +110,7 @@ class ActivitySettings : AppCompatActivity(),
 
     // To check if an accessibility service is enabled
     // See: https://stackoverflow.com/questions/18094982/detect-if-my-accessibility-service-is-enabled/18095283
-    fun isAccessServiceEnabled(context: Context, accessibilityServiceClass: Class<*>): Boolean {
+    private fun isAccessServiceEnabled(context: Context, accessibilityServiceClass: Class<*>): Boolean {
         val prefString = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
         return prefString != null && prefString.contains(context.packageName + "/" + accessibilityServiceClass.name)
     }
