@@ -19,7 +19,7 @@ private const val TITLE_TAG = "settingsActivityTitle"
 class ActivitySettings : AppCompatActivity(),
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
-    private var iSettingsRootFragment: HeaderFragment = HeaderFragment()
+    private var iSettingsRootFragment: FragmentSettingsRoot = FragmentSettingsRoot()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,11 +142,5 @@ class ActivitySettings : AppCompatActivity(),
                     .setData(Uri.parse("package:$packageName")))
         }
         builder.create().show()
-    }
-
-    class HeaderFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.preferences_root, rootKey)
-        }
     }
 }
