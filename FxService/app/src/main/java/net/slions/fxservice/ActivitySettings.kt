@@ -4,6 +4,7 @@ package net.slions.fxservice
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -32,11 +33,25 @@ class ActivitySettings : AppCompatActivity(),
         } else {
             title = savedInstanceState.getCharSequence(TITLE_TAG)
         }
+
+        /*
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0) {
                 setTitle(R.string.title_activity_settings)
             }
         }
+        */
+
+        // Set title in tool bar with version
+        var pInfo = packageManager.getPackageInfo(packageName, 0);
+        var version = pInfo.versionName
+        var title = getText(R.string.title_activity_settings) as String
+        title += " - v" + version
+        if (BuildConfig.DEBUG) {
+            title += " - debug"
+        }
+        setTitle(title)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

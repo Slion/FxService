@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -43,10 +44,12 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 // For aut-sync scheduler
@@ -526,6 +529,31 @@ public class FxService extends AccessibilityService
             lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
             lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
             lp.gravity = Gravity.TOP;
+            //lp.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+
+            /*
+            LinearLayout orientationChanger = new LinearLayout(this);
+            orientationChanger.setClickable(false);
+            orientationChanger.setFocusable(false);
+            orientationChanger.setFocusableInTouchMode(false);
+            orientationChanger.setLongClickable(false);
+
+            int windowType = 0;
+            WindowManager.LayoutParams orientationLayout = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY , WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.RGBA_8888);
+
+            wm.addView(orientationChanger, orientationLayout);
+            orientationChanger.setVisibility(View.GONE);
+
+            orientationLayout.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            wm.updateViewLayout(orientationChanger, orientationLayout);
+            orientationChanger.setVisibility(View.VISIBLE);
+
+             */
+
 
             //LayoutInflater inflater = LayoutInflater.from(this);
             //mColorLayout = inflater.inflate(R.layout.action_bar, mLayout);
