@@ -19,7 +19,7 @@ private const val TITLE_TAG = "settingsActivityTitle"
 class ActivitySettings : AppCompatActivity(),
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
-    var iSettingsRootFragment: HeaderFragment = HeaderFragment()
+    private var iSettingsRootFragment: HeaderFragment = HeaderFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +105,17 @@ class ActivitySettings : AppCompatActivity(),
         super.onPostResume()
         // Set accessibility service preference according to our accessibility service status
         val pref = iSettingsRootFragment.findPreference<SwitchPreferenceCompat>(resources.getString(R.string.pref_key_accessibility_service))
-        pref?.isChecked = isAccessServiceEnabled(this, FxService::class.java)
+        var serviceEnabled = isAccessServiceEnabled(this, FxService::class.java)
+        pref?.isChecked = serviceEnabled
+
+        if (!serviceEnabled)
+        {
+            // Service is disabled go back to root page then
+            while (supportFragmentManager.backStackEntryCount>0)
+            {
+                supportFragmentManager.popBackStackImmediate()
+            }
+        }
     }
 
     // To check if an accessibility service is enabled
