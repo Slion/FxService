@@ -4,7 +4,6 @@ package net.slions.fxservice
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -54,6 +53,12 @@ class ActivitySettings : AppCompatActivity(),
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -143,19 +148,21 @@ class ActivitySettings : AppCompatActivity(),
     /**
      *
      */
-    public fun showDialogWriteSettingsForScreenRotation() {
+    public fun showDialogNeedPermission(aMessageResId: Int, aIntentAction: String) {
         val builder = AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
         builder.setCancelable(true)
                 .setIcon(R.drawable.ic_screen_rotation)
                 .setTitle(R.string.app_name)
                 .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog: DialogInterface, which: Int -> dialog.cancel() })
-        builder.setMessage(R.string.screen_rotation_permission_alert_dialog_message)
+        builder.setMessage(aMessageResId)
         builder.setPositiveButton(R.string.settings
         ) { dialog, which ->  // Launch system UI to manage "write settings" permission for this application
-            startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+            startActivity(Intent(aIntentAction)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .setData(Uri.parse("package:$packageName")))
         }
         builder.create().show()
     }
+
+
 }
