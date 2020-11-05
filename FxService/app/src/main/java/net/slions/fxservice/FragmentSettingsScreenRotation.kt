@@ -16,10 +16,26 @@ class FragmentSettingsScreenRotation : PreferenceFragmentCompat() {
                 true
             } else {
                 // We don't have the proper permissions, ask the user to give it to us
-                (activity as ActivitySettings).showDialogWriteSettingsForScreenRotation()
+                (activity as ActivitySettings).showDialogNeedPermission(
+                        R.string.screen_rotation_permission_alert_dialog_message,
+                        Settings.ACTION_MANAGE_WRITE_SETTINGS)
                 false
             }
         }
+
+
+        findPreference<SwitchPreferenceCompat>(resources.getString(R.string.pref_key_screen_rotation_force_landscape))?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
+            if (Settings.canDrawOverlays(context)) {
+                true
+            } else {
+                // We don't have the proper permissions, ask the user to give it to us
+                (activity as ActivitySettings).showDialogNeedPermission(
+                        R.string.screen_rotation_permission_message_force_landscape_show_overlay,
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                false
+            }
+        }
+
 
     }
 }

@@ -45,6 +45,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
@@ -58,6 +59,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
+import static net.slions.fxservice.UtilsKt.createForceLandscapeOverlay;
+import static net.slions.fxservice.UtilsKt.destroyForceLandscapeOverlay;
+import static net.slions.fxservice.UtilsKt.updateForceLandscapeOverlay;
 
 public class FxService extends AccessibilityService
         implements SensorEventListener,
@@ -103,6 +107,8 @@ public class FxService extends AccessibilityService
     double iRotationLandscapeAngle = Math.toRadians(50);
     // Hardware keyboard status
     private int iHardKeyboardHidden = Configuration.HARDKEYBOARDHIDDEN_UNDEFINED;
+    // Force landscape overlay
+    View iForceLandscapeOverlay;
 
     class BroadcastListener extends BroadcastReceiver {
 
@@ -254,6 +260,7 @@ public class FxService extends AccessibilityService
         iVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         // Save that so that we can compare it upon resource change
         iHardKeyboardHidden = getResources().getConfiguration().hardKeyboardHidden;
+        setupForceLandscapeOverlay(isKeyboardOpened());
     }
 
     // From Service
@@ -274,6 +281,12 @@ public class FxService extends AccessibilityService
         iSensorManager = null;
         iVibrator = null;
         iHardKeyboardHidden = Configuration.HARDKEYBOARDHIDDEN_UNDEFINED;
+
+        if (iForceLandscapeOverlay!=null)
+        {
+            destroyForceLandscapeOverlay(this,iForceLandscapeOverlay);
+            iForceLandscapeOverlay = null;
+        }
         Toast.makeText(this, R.string.toast_service_destroyed, Toast.LENGTH_SHORT).show();
     }
 
@@ -302,6 +315,7 @@ public class FxService extends AccessibilityService
         if (newConfig.hardKeyboardHidden != iHardKeyboardHidden)
         {
             iHardKeyboardHidden = newConfig.hardKeyboardHidden;
+            setupForceLandscapeOverlay(isKeyboardOpened());
 
             // Hardware keyboard status changed
             if (isKeyboardClosed())
@@ -329,6 +343,46 @@ public class FxService extends AccessibilityService
                 if (Settings.System.canWrite(this) && FxSettings.isScreenRotationAuto(this) && FxSettings.isScreenRotationKeyboardLandscape(this)) {
                     scheduleRotationIfNeeded(Surface.ROTATION_90);
                 }
+            }
+        }
+    }
+
+    /**
+     * For some reason that works properly only when the keyboard is open.
+     * Using values other than ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED is breaking our auto custom rotation somehow.
+     * Even removing/destroying the view overlay did not help somehow.
+     * Ho well that was a big mess so don't assume anything if you are changing that code.
+     */
+    void setupForceLandscapeOverlay(boolean aForce)
+    {
+        // Defensive
+        if (!Settings.canDrawOverlays(this))
+        {
+            return;
+        }
+
+        if (aForce && isForceLandscapeEnabled())
+        {
+            // Force landscape if desired
+            //iForceLandscapeOverlay.setVisibility(View.VISIBLE);
+            if (iForceLandscapeOverlay==null)
+            {
+                iForceLandscapeOverlay = createForceLandscapeOverlay(FxService.this);
+            }
+            else
+            {
+                updateForceLandscapeOverlay(FxService.this,iForceLandscapeOverlay,ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+        }
+        else
+        {
+            // Make sure we allow auto rotate
+            //iForceLandscapeOverlay.setVisibility(View.GONE);
+            if (iForceLandscapeOverlay!=null)
+            {
+                updateForceLandscapeOverlay(FxService.this,iForceLandscapeOverlay,ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                //destroyForceLandscapeOverlay(FxService.this, iForceLandscapeOverlay);
+                //iForceLandscapeOverlay = null;
             }
         }
     }
@@ -368,6 +422,11 @@ public class FxService extends AccessibilityService
             setupAccelerometer();
             setupMagnetometer();
             setupRotation();
+        }
+        else if (key == getResources().getString(R.string.pref_key_screen_rotation_force_landscape))
+        {
+            // Force landscape option changed
+            setupForceLandscapeOverlay(isKeyboardOpened());
         }
         else if (key.startsWith("pref_key_screen_rotation"))
         {
@@ -485,6 +544,11 @@ public class FxService extends AccessibilityService
         return FxSettings.getPrefBoolean(this, R.string.pref_key_screen_filter,false);
     }
 
+    private boolean isForceLandscapeEnabled()
+    {
+        return FxSettings.getPrefBoolean(this, R.string.pref_key_screen_rotation_force_landscape,false);
+    }
+
     // Setting up the overlay to draw on top of status bar and navigation bar can be tricky
     // See: https://stackoverflow.com/questions/21380167/draw-bitmaps-on-top-of-the-navigation-bar-in-android
     // See: https://stackoverflow.com/questions/31516089/draw-over-navigation-bar-and-other-apps-on-android-version-5
@@ -492,7 +556,6 @@ public class FxService extends AccessibilityService
     //
     private void setupColorFilter()
     {
-
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         if (isScreenFilterEnabled() && mLayout == null)
@@ -529,34 +592,6 @@ public class FxService extends AccessibilityService
             lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
             lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
             lp.gravity = Gravity.TOP;
-            //lp.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-
-            /*
-            LinearLayout orientationChanger = new LinearLayout(this);
-            orientationChanger.setClickable(false);
-            orientationChanger.setFocusable(false);
-            orientationChanger.setFocusableInTouchMode(false);
-            orientationChanger.setLongClickable(false);
-
-            int windowType = 0;
-            WindowManager.LayoutParams orientationLayout = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY , WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                    PixelFormat.RGBA_8888);
-
-            wm.addView(orientationChanger, orientationLayout);
-            orientationChanger.setVisibility(View.GONE);
-
-            orientationLayout.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-            wm.updateViewLayout(orientationChanger, orientationLayout);
-            orientationChanger.setVisibility(View.VISIBLE);
-
-             */
-
-
-            //LayoutInflater inflater = LayoutInflater.from(this);
-            //mColorLayout = inflater.inflate(R.layout.action_bar, mLayout);
 
             wm.addView(mLayout, lp);
         }
@@ -1199,8 +1234,6 @@ public class FxService extends AccessibilityService
             //AlertDialog.Builder builder = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_DARK);
             //AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.Theme_AppCompat_Dialog_Alert);
             AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AppTheme_LockAlertDialog);
-
-
 
             //
             builder.setMessage(getString(R.string.dialog_lock_message,iSecondsBeforeLock))
