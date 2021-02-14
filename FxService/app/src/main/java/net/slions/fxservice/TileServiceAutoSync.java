@@ -1,6 +1,7 @@
 package net.slions.fxservice;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.graphics.drawable.Icon;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
@@ -72,7 +73,7 @@ public class TileServiceAutoSync extends TileService {
             Tile tile = this.getQsTile();
             //tile.setLabel(getString(R.string.tile_service_name_adaptive_brightness));
             //tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_sync_24px));
-            if (getContentResolver().getMasterSyncAutomatically())
+            if (ContentResolver.getMasterSyncAutomatically())
             {
                 tile.setState(Tile.STATE_ACTIVE);
             }
