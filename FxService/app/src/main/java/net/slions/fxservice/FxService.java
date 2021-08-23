@@ -18,6 +18,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -34,8 +35,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 
-import androidx.core.graphics.ColorUtils;
-
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -45,12 +44,10 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 // For aut-sync scheduler
@@ -62,6 +59,8 @@ import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
 import static net.slions.fxservice.UtilsKt.createForceLandscapeOverlay;
 import static net.slions.fxservice.UtilsKt.destroyForceLandscapeOverlay;
 import static net.slions.fxservice.UtilsKt.updateForceLandscapeOverlay;
+
+import androidx.core.graphics.ColorUtils;
 
 public class FxService extends AccessibilityService
         implements SensorEventListener,
@@ -139,7 +138,7 @@ public class FxService extends AccessibilityService
         public void run()
         {
             //
-            getContentResolver().setMasterSyncAutomatically(true);
+            ContentResolver.setMasterSyncAutomatically(true);
             Toast.makeText(FxService.this, R.string.toast_auto_sync_enabled, Toast.LENGTH_SHORT).show();
             //
             long delay = FxSettings.getPrefInt(FxService.this,R.string.pref_key_auto_sync_on_duration,5) * 60 * 1000;
@@ -155,7 +154,7 @@ public class FxService extends AccessibilityService
         public void run()
         {
             // Turn off call back
-            getContentResolver().setMasterSyncAutomatically(false);
+            ContentResolver.setMasterSyncAutomatically(false);
             Toast.makeText(FxService.this, R.string.toast_auto_sync_disabled, Toast.LENGTH_SHORT).show();
             //
             scheduleNextAutoSync();
@@ -302,8 +301,8 @@ public class FxService extends AccessibilityService
     }
 
     /**
-     * We only realised late that hardware keyboard status could be checked thus.
-     * Consider moving legacy stuff from keyboard handler in there?
+     * From here we can notably check if our keyboard was just closed or opened.
+     *
      * @param newConfig
      */
     @Override
@@ -321,6 +320,7 @@ public class FxService extends AccessibilityService
             if (isKeyboardClosed())
             {
                 // Keyboard was closed
+                onKeyboardClosed();
                 // Show debug message if needed
                 if (FxSettings.showKeyboardStatusChange(this)) {
                     Toast.makeText(FxService.this, R.string.toast_hardware_keyboard_closed, Toast.LENGTH_SHORT).show();
@@ -334,6 +334,7 @@ public class FxService extends AccessibilityService
             else if (isKeyboardOpened())
             {
                 // Keyboard was opened
+                onKeyboardOpened();
                 // Show debug message if needed
                 if (FxSettings.showKeyboardStatusChange(this)) {
                     Toast.makeText(FxService.this, R.string.toast_hardware_keyboard_opened, Toast.LENGTH_SHORT).show();
@@ -556,6 +557,7 @@ public class FxService extends AccessibilityService
     //
     private void setupColorFilter()
     {
+
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         if (isScreenFilterEnabled() && mLayout == null)
@@ -827,10 +829,73 @@ public class FxService extends AccessibilityService
         System.out.println("Brightness sys/fx:  " + getSystemBrightness() + "/" + getScreenFilterBrightness());
     }
 
+    /**
+     * Lock the screen upon case closure with specified delay if specified in user settings.
+     */
+    void onCaseClosed()
+    {
+        Log.d("FxService:", "Case close detected");
+        // Check if user wants us to lock screen when closing her case
+        if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
+        {
+            Log.d("FxService:", "Lock on case close");
+            int delayInMs = getLockDelayInMilliseconds();
+            // Make sure the screen goes off while we are delaying screen lock
+            iWakeLockProximityScreenOff.acquire(delayInMs+1000);
+            // Delayed screen lock
+            iHandler.postDelayed(iLockScreenCallback, delayInMs);
+            //
+            iProximitySensorArmed = true;
+        }
+    }
+
+    /**
+     *
+     */
+    void onCaseOpened()
+    {
+        // To be safe just cancel possible callbacks
+        iHandler.removeCallbacks(iLockScreenCallback);
+        releaseProximityWakeLock();
+
+        // Only show message if lock was requested
+        if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
+        {
+            Toast.makeText(this, R.string.toast_screen_lock_abort, Toast.LENGTH_SHORT).show();
+        }
+
+        iProximitySensorArmed = false;
+    }
+
+    /**
+     *
+     */
+    void onKeyboardClosed()
+    {
+        if (FxSettings.getPrefBoolean(this,R.string.pref_key_keyboard_close_lock_screen,false))
+        {
+            lockDeviceUponKeyboardClose();
+        }
+    }
+
+    /**
+     *
+     */
+    void onKeyboardOpened()
+    {
+        iHandler.removeCallbacks(iLockAlertDialogCallback);
+        if (iLockAlertDialog!=null)
+        {
+            iLockAlertDialog.dismiss();
+        }
+    }
+
+
     @Override
     public boolean onKeyEvent(KeyEvent event) {
         int action = event.getAction();
         int keyCode = event.getKeyCode();
+        int scanCode = event.getScanCode();
 
         //Log.d("FxService:", event.toString());
 
@@ -892,86 +957,84 @@ public class FxService extends AccessibilityService
 
         // Here we handle case and keyboard, open and close events
         // Ideally we should do that using sensors rather than intercepting key events.
-        if (event.getMetaState() == KeyEvent.META_FUNCTION_ON)
+
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.P)
         {
-            if (keyCode == KeyEvent.KEYCODE_F3)
+            // For OS SDK level > 28 we assume we are on Lineage OS most certainly 18.1 which is Android 12
+
+            // On Lineage OS we don't get a keycode but still get the scan code
+            if (scanCode == 468)
             {
-                // Case closed
-                if (action == KeyEvent.ACTION_UP)
+                if (action == KeyEvent.ACTION_DOWN && event.getRepeatCount()==0)
                 {
-                    // Only perform action on key up
-                    // Check if user wants us to lock screen when closing her case
-                    if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
-                    {
-                        int delayInMs = getLockDelayInMilliseconds();
-                        // Make sure the screen goes off while we are delaying screen lock
-                        iWakeLockProximityScreenOff.acquire(delayInMs+1000);
-                        // Delayed screen lock
-                        iHandler.postDelayed(iLockScreenCallback, delayInMs);
-                        //
-                        iProximitySensorArmed = true;
-                    }
+                    // That's our case close cue
+                    onCaseClosed();
                 }
-
-                // Consume both up and down events to prevent the system doing anything with those
-                // That notably prevents the trigger of search F3 in chrome browser
-                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_case,true);
-            }
-            else if (keyCode == KeyEvent.KEYCODE_F4)
-            {
-                // Case opened
-                // Abort screen lock
-                if (action == KeyEvent.ACTION_UP)
+                else if (action == KeyEvent.ACTION_UP)
                 {
-                    // Only perform action on key up
-                    // To be safe just cancel possible callbacks
-                    iHandler.removeCallbacks(iLockScreenCallback);
-                    releaseProximityWakeLock();
-
-                    // Only show message if lock was requested
-                    if (FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_lock_screen,true))
-                    {
-                        Toast.makeText(this, R.string.toast_screen_lock_abort, Toast.LENGTH_SHORT).show();
-                    }
-
-                    iProximitySensorArmed = false;
+                    onCaseOpened();
                 }
-
-                // Consume both up and down events to prevent the system doing anything with those
-                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_case,true);
             }
-            else if (keyCode == KeyEvent.KEYCODE_F5)
-            {
-                // Keyboard closed
-                if (action == KeyEvent.ACTION_UP)
-                {
-                    if (FxSettings.getPrefBoolean(this,R.string.pref_key_keyboard_close_lock_screen,false))
-                    {
-                        lockDeviceUponKeyboardClose();
-                    }
-                }
-
-                // Consume both up and down events to prevent the system doing anything with those
-                // Fix issue with browser page reload when closing keyboard
-                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_keyboard,true);
-            }
-            else if (keyCode == KeyEvent.KEYCODE_F6)
-            {
-                // Keyboard opened
-                if (action == KeyEvent.ACTION_UP)
-                {
-                    // Cancel potential pending lock
-                    iHandler.removeCallbacks(iLockAlertDialogCallback);
-                    if (iLockAlertDialog!=null)
-                    {
-                        iLockAlertDialog.dismiss();
-                    }
-                }
-                    // Consume both up and down events to prevent the system doing anything with those
-                return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_keyboard,true);
-            }
-
         }
+        else
+        {
+            // That was working well for F(x)tec Pro¹ on stock Android 9
+            if (event.getMetaState() == KeyEvent.META_FUNCTION_ON)
+            {
+                if (keyCode == KeyEvent.KEYCODE_F3)
+                {
+                    // Case closed
+                    if (action == KeyEvent.ACTION_UP)
+                    {
+                        // Only perform action on key up
+                        onCaseClosed();
+                    }
+
+                    // Consume both up and down events to prevent the system doing anything with those
+                    // That notably prevents the trigger of search F3 in chrome browser
+                    return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_case,true);
+                }
+                else if (keyCode == KeyEvent.KEYCODE_F4)
+                {
+                    // Case opened
+                    // Abort screen lock
+                    if (action == KeyEvent.ACTION_UP)
+                    {
+                        // Only perform action on key up
+                        onCaseOpened();
+                    }
+
+                    // Consume both up and down events to prevent the system doing anything with those
+                    return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_case,true);
+                }
+                else if (keyCode == KeyEvent.KEYCODE_F5)
+                {
+                    // Keyboard closed
+                    if (action == KeyEvent.ACTION_UP)
+                    {
+                        // Moved to proper handler so that it works on Lineage OS too
+                        //onKeyboardClosed();
+                    }
+
+                    // Consume both up and down events to prevent the system doing anything with those
+                    // Fix issue with browser page reload when closing keyboard
+                    return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_close_keyboard,true);
+                }
+                else if (keyCode == KeyEvent.KEYCODE_F6)
+                {
+                    // Keyboard opened
+                    if (action == KeyEvent.ACTION_UP)
+                    {
+                        // Cancel potential pending lock
+                        //onKeyboardOpened()
+                    }
+                    // Consume both up and down events to prevent the system doing anything with those
+                    return FxSettings.getPrefBoolean(this, R.string.pref_key_filter_open_keyboard,true);
+                }
+
+            }
+        }
+
 
         // For proper system vibration and audio feedback consider using:
         // view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
