@@ -117,6 +117,9 @@ public class FxService extends AccessibilityService
             if (Objects.equals(intent.getAction(), Intent.ACTION_USER_PRESENT)) {
                 // Device was unlocked, disarm proximity sensor
                 iProximitySensorArmed = false;
+                // Reset that guy here too as it keeps failing us
+                closeProximitySensor();
+                setupProximitySensor(true);
             }
         }
     }
@@ -255,6 +258,10 @@ public class FxService extends AccessibilityService
         prefs.registerOnSharedPreferenceChangeListener(this);
 
         Toast.makeText(this, R.string.toast_service_connected, Toast.LENGTH_SHORT).show();
+        if(BuildConfig.DEBUG) {
+            // Useful to tell which variant of the service was started
+            Toast.makeText(this, R.string.toast_debug, Toast.LENGTH_SHORT).show();
+        }
 
         iVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         // Save that so that we can compare it upon resource change
@@ -658,15 +665,26 @@ public class FxService extends AccessibilityService
 
     private void setupProximitySensor()
     {
+        setupProximitySensor(false);
+    }
+
+    private void setupProximitySensor(boolean aSilent)
+    {
         // Open proximity sensor if needed
         if (FxSettings.getPrefBoolean(this,R.string.pref_key_proximity_wake_up,true))
         {
-            Toast.makeText(this, R.string.toast_proximity_sensor_enabled, Toast.LENGTH_SHORT).show();
+            if (!aSilent)
+            {
+                Toast.makeText(this, R.string.toast_proximity_sensor_enabled, Toast.LENGTH_SHORT).show();
+            }
             openProximitySensor();
         }
         else
         {
-            Toast.makeText(this, R.string.toast_proximity_sensor_disabled, Toast.LENGTH_SHORT).show();
+            if (!aSilent)
+            {
+                Toast.makeText(this, R.string.toast_proximity_sensor_disabled, Toast.LENGTH_SHORT).show();
+            }
             closeProximitySensor();
         }
     }
@@ -1112,6 +1130,12 @@ public class FxService extends AccessibilityService
                 break;
             case Sensor.TYPE_PROXIMITY:
                 // If no proximity and previously proximity then wake up the screen for defined time
+
+                //Log.d("FxService:", "Proximity sensor data");
+                //Log.d("FxService:", "Proximity sensor armed: " + iProximitySensorArmed);
+                //Log.d("FxService:", "Proximity sensor current: " + currentValue);
+                //Log.d("FxService:", "Proximity sensor last: " + iLastProximityValue);
+
                 if (currentValue>0 && iLastProximityValue == 0 && iProximitySensorArmed)
                 {
                     // To be safe just cancel possible callbacks
@@ -1119,6 +1143,10 @@ public class FxService extends AccessibilityService
                     releaseProximityWakeLock();
                     //
                     turnOnScreen(FxSettings.getPrefInt(this,R.string.pref_key_proximity_wake_up_timeout,5) * 1000);
+                    // On Lineage OS for some reason we needed to reset our proximity sensor here
+                    // Otherwise we stop getting notification after the first one once the screen is locked
+                    closeProximitySensor();
+                    setupProximitySensor(true);
                 }
 
                 iLastProximityValue = currentValue;
