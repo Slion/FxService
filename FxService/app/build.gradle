@@ -23,8 +23,8 @@ android {
         download {
             dimension "publisher"
             applicationIdSuffix ".download"
-            versionCode 24
-            versionName "1.1.0"
+            versionCode 27
+            versionName "1.1.3"
             archivesBaseName = "FxService-v$versionName"
         }
 

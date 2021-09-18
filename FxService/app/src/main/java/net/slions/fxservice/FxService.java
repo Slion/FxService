@@ -564,7 +564,7 @@ public class FxService extends AccessibilityService
     //
     private void setupColorFilter()
     {
-
+/*
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         if (isScreenFilterEnabled() && mLayout == null)
@@ -621,7 +621,7 @@ public class FxService extends AccessibilityService
             int blackAlpha = ColorUtils.setAlphaComponent(0,0xFF - brightness);
             mLayout.setBackgroundColor(ColorUtils.compositeColors(blackAlpha,color));
         }
-
+*/
     }
 
 
@@ -922,7 +922,8 @@ public class FxService extends AccessibilityService
         // Ctrl + Fn + O
         if ((event.getMetaState() == (KeyEvent.META_CTRL_ON|KeyEvent.META_CTRL_LEFT_ON|KeyEvent.META_FUNCTION_ON))
         // Ctrl + Fn + O with Fn and Alt swapped with Fx Qwerty keyboard layout
-        ||(event.getMetaState() == (KeyEvent.META_CTRL_ON|KeyEvent.META_CTRL_LEFT_ON|KeyEvent.META_ALT_ON|KeyEvent.META_ALT_LEFT_ON)))
+        ||(event.getMetaState() == (KeyEvent.META_CTRL_ON|KeyEvent.META_CTRL_LEFT_ON|KeyEvent.META_ALT_ON|KeyEvent.META_ALT_LEFT_ON))
+        ||(event.getMetaState() == (KeyEvent.META_CTRL_ON|KeyEvent.META_CTRL_LEFT_ON|KeyEvent.META_ALT_RIGHT_ON)))
         {
             if (action == KeyEvent.ACTION_UP)
             {
