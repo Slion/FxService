@@ -52,6 +52,9 @@
     <string name="pref_key_case_close_lock_screen">pref_key_case_close_lock_screen</string>
     <string name="pref_key_keyboard_close_lock_screen">pref_key_keyboard_close_lock_screen</string>
     <string name="pref_key_keyboard_close_delay_in_seconds">pref_key_keyboard_close_delay_in_seconds</string>
+    <string name="pref_key_case_close_vibration_duration">pref_key_case_close_vibration_duration</string>
+    <string name="pref_key_case_close_vibration_amplitude">pref_key_case_close_vibration_amplitude</string>
+    <string name="pref_key_case_close_vibration_double_click">pref_key_case_close_vibration_double_click</string>
     <string name="pref_key_proximity_wake_up">pref_key_proximity_wake_up</string>
     <string name="pref_key_proximity_wake_up_timeout">pref_key_proximity_wake_up_timeout</string>
     <string name="pref_key_light_sensor_adaptive_brightness">pref_key_light_sensor_adaptive_brightness</string>
@@ -119,6 +122,10 @@
     <string name="pref_title_case_close_delay_in_seconds">Lock screen after n seconds</string>
     <string name="pref_title_case_close_delay_in_minutes">Lock screen after n minutes</string>
     <string name="pref_title_case_close_lock_screen">Lock screen</string>
+    <string name="pref_title_case_close_vibration_duration">Vibration duration (ms)</string>
+    <string name="pref_title_case_close_vibration_amplitude">Vibration amplitude</string>
+    <string name="pref_title_case_close_vibration_double_click">Vibration use double click effect</string>
+    <string name="pref_summary_case_close_vibration_double_click">Works from Android 10 only</string>
 
     <!-- Preferences: Proximity sensor -->
     <string name="pref_title_proximity_wake_up">Wake up screen</string>
