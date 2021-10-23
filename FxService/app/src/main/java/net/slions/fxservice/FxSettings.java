@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.StringRes;
+
 import java.util.Map;
 
 public class FxSettings
@@ -66,13 +68,13 @@ public class FxSettings
 
 
     // Fetch specified boolean preference
-    static boolean getPrefBoolean(Context aContext, int aKey, Boolean aDefault)
+    static boolean getPrefBoolean(Context aContext, @StringRes int aKey, Boolean aDefault)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(aContext);
         return preferences.getBoolean(aContext.getResources().getString(aKey),aDefault);
     }
 
-    static void setPrefBoolean(Context aContext, int aKey, Boolean aValue)
+    static void setPrefBoolean(Context aContext, @StringRes int aKey, Boolean aValue)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(aContext);
         SharedPreferences.Editor editor = preferences.edit();
@@ -82,14 +84,14 @@ public class FxSettings
 
 
     // Fetch specified integer preference
-    static int getPrefInt(Context aContext, int aKey, int aDefault)
+    static int getPrefInt(Context aContext, @StringRes int aKey, int aDefault)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(aContext);
         return preferences.getInt(aContext.getResources().getString(aKey),aDefault);
 
     }
 
-    static void setPrefInt(Context aContext, int aKey, int aValue)
+    static void setPrefInt(Context aContext, @StringRes int aKey, int aValue)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(aContext);
         SharedPreferences.Editor editor = preferences.edit();
@@ -97,7 +99,23 @@ public class FxSettings
         editor.commit();
     }
 
-    // Following are a bunch of stuff we intended to persist some adaptive brightness settings but I gues we won't need it
+    // Fetch specified integer preference
+    static String getPrefString(Context aContext, @StringRes int aKey, @StringRes int aDefault)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(aContext);
+        return preferences.getString(aContext.getResources().getString(aKey),aContext.getResources().getString(aDefault));
+
+    }
+
+    static void setPrefString(Context aContext, @StringRes int aKey, String aValue)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(aContext);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(aContext.getString(aKey), aValue);
+        editor.commit();
+    }
+
+    // Following are a bunch of stuff we intended to persist some adaptive brightness settings but I guess we won't need it
     // In fact we are probably going to keep adaptive brightness very simple.
 
     static SharedPreferences getCustomPreferences(Context aContext, String aName)

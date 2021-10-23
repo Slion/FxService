@@ -37,29 +37,27 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
+            app:dependency="@string/pref_key_case_close_lock_screen"
+            app:key="@string/pref_key_case_close_vibration_on_lock"
+            app:title="@string/pref_title_case_close_vibrate_on_lock" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:dependency="@string/pref_key_case_close_vibration_on_lock"
             app:key="@string/pref_key_case_close_vibration_double_click"
+            android:disableDependentsState="true"
             app:title="@string/pref_title_case_close_vibration_double_click"
             app:summary="@string/pref_summary_case_close_vibration_double_click"/>
 
-        <SeekBarPreference
-            android:max="1000"
-            app:defaultValue="10"
-            app:dependency="@string/pref_key_case_close_lock_screen"
+        <EditTextPreference
+            app:defaultValue="@string/pref_default_case_close_vibration_pattern"
             app:iconSpaceReserved="false"
-            app:key="@string/pref_key_case_close_vibration_duration"
-            app:min="0"
-            app:showSeekBarValue="true"
-            app:title="@string/pref_title_case_close_vibration_duration" />
+            app:dependency="@string/pref_key_case_close_vibration_double_click"
+            app:key="@string/pref_key_case_close_vibration_pattern"
+            app:title="@string/pref_title_case_close_vibration_pattern"
+            app:summary="@string/pref_summary_case_close_vibration_pattern"/>
 
-        <SeekBarPreference
-            android:max="255"
-            app:defaultValue="50"
-            app:dependency="@string/pref_key_case_close_lock_screen"
-            app:iconSpaceReserved="false"
-            app:key="@string/pref_key_case_close_vibration_amplitude"
-            app:min="1"
-            app:showSeekBarValue="true"
-            app:title="@string/pref_title_case_close_vibration_amplitude" />
     </net.slions.fxservice.FxPreferenceCategory>
 
     <net.slions.fxservice.FxPreferenceCategory

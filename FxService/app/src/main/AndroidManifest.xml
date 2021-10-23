@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Needed to change system settings such as adaptive brightness -->
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" /> <!-- Needed to display lock cancel dialog -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- Needed to change auto-sync -->
+        tools:ignore="ProtectedPermissions" /> <!-- Needed to change auto-sync -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- Needed to display lock cancel dialog -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
 

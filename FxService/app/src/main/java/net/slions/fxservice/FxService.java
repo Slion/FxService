@@ -60,6 +60,7 @@ import static android.os.PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
 import static net.slions.fxservice.UtilsKt.createForceLandscapeOverlay;
 import static net.slions.fxservice.UtilsKt.destroyForceLandscapeOverlay;
 import static net.slions.fxservice.UtilsKt.updateForceLandscapeOverlay;
+import static net.slions.fxservice.UtilsKt.vibrateOnScreenLock;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.graphics.ColorUtils;
@@ -177,36 +178,10 @@ public class FxService extends AccessibilityService
             // No need for proximity lock anymore
             releaseProximityWakeLock();
             // Vibrate if user wants it
-            vibrateOnScreenLock();
+            String pattern = FxSettings.getPrefString(FxService.this, R.string.pref_key_case_close_vibration_pattern, R.string.pref_default_case_close_vibration_pattern);
+            vibrateOnScreenLock(FxService.this, pattern);
         }
     };
-
-    //
-    void vibrateOnScreenLock() {
-        int duration = FxSettings.getPrefInt(this, R.string.pref_key_case_close_vibration_duration,50);
-        int amplitude = FxSettings.getPrefInt(this, R.string.pref_key_case_close_vibration_amplitude,1);
-        boolean useDoubleClick = FxSettings.getPrefBoolean(this, R.string.pref_key_case_close_vibration_double_click,true);
-        if (duration!=0 || useDoubleClick) {
-            //iVibrator.vibrate(VibrationEffect.createOneShot(duration, amplitude));
-            //iVibrator.vibrate(VibrationEffect.createWaveform(new long[]{1000, 1000, 1000}, 0));
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && useDoubleClick) {
-                iVibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK));
-                //long[] mVibratePattern = new long[]{0, 400, 800, 600, 800, 800, 800, 1000};
-                //int[] mAmplitudes = new int[]{0, 255, 0, 255, 0, 255, 0, 255};
-                // -1 : Play exactly once
-
-                // F(x)Tec Pro1 does nt have amplitude control
-                //boolean hasAmplitudeControl = iVibrator.hasAmplitudeControl();
-                //if (hasAmplitudeControl) {
-                //    VibrationEffect effect = VibrationEffect.createWaveform(mVibratePattern, mAmplitudes, -1);
-                //    iVibrator.vibrate(effect);
-                //}
-            } else {
-                iVibrator.vibrate(VibrationEffect.createOneShot(duration, amplitude));
-                //iHandler.postDelayed(iLockAlertDialogCallback, 1000);
-            }
-        }
-    }
 
     // Used to implement lock logic after closing keyboard
     Runnable iLockAlertDialogCallback = new Runnable()

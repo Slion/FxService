@@ -52,9 +52,9 @@
     <string name="pref_key_case_close_lock_screen">pref_key_case_close_lock_screen</string>
     <string name="pref_key_keyboard_close_lock_screen">pref_key_keyboard_close_lock_screen</string>
     <string name="pref_key_keyboard_close_delay_in_seconds">pref_key_keyboard_close_delay_in_seconds</string>
-    <string name="pref_key_case_close_vibration_duration">pref_key_case_close_vibration_duration</string>
-    <string name="pref_key_case_close_vibration_amplitude">pref_key_case_close_vibration_amplitude</string>
+    <string name="pref_key_case_close_vibration_pattern">pref_key_case_close_vibration_pattern</string>
     <string name="pref_key_case_close_vibration_double_click">pref_key_case_close_vibration_double_click</string>
+    <string name="pref_key_case_close_vibration_on_lock">pref_key_case_close_vibration_on_lock</string>
     <string name="pref_key_proximity_wake_up">pref_key_proximity_wake_up</string>
     <string name="pref_key_proximity_wake_up_timeout">pref_key_proximity_wake_up_timeout</string>
     <string name="pref_key_light_sensor_adaptive_brightness">pref_key_light_sensor_adaptive_brightness</string>
@@ -122,10 +122,12 @@
     <string name="pref_title_case_close_delay_in_seconds">Lock screen after n seconds</string>
     <string name="pref_title_case_close_delay_in_minutes">Lock screen after n minutes</string>
     <string name="pref_title_case_close_lock_screen">Lock screen</string>
-    <string name="pref_title_case_close_vibration_duration">Vibration duration (ms)</string>
-    <string name="pref_title_case_close_vibration_amplitude">Vibration amplitude</string>
+    <string name="pref_title_case_close_vibration_pattern">Vibration pattern</string>
+    <string name="pref_summary_case_close_vibration_pattern">Comma separated amount on milliseconds during which the vibrator should be off then on.</string>
+    <string name="pref_default_case_close_vibration_pattern">0,30,50,15,50,30</string>
     <string name="pref_title_case_close_vibration_double_click">Vibration use double click effect</string>
-    <string name="pref_summary_case_close_vibration_double_click">Works from Android 10 only</string>
+    <string name="pref_summary_case_close_vibration_double_click">Only works from Android 10 onwards.</string>
+    <string name="pref_title_case_close_vibrate_on_lock">Vibrate when screen is locked</string>
 
     <!-- Preferences: Proximity sensor -->
     <string name="pref_title_proximity_wake_up">Wake up screen</string>
@@ -198,5 +200,6 @@
     <string name="toast_auto_sync_disabled">"Fx Service: Auto-sync disabled"</string>
     <string name="toast_hardware_keyboard_opened">"Hardware keyboard opened"</string>
     <string name="toast_hardware_keyboard_closed">"Hardware keyboard closed"</string>
+    <string name="toast_vibration_pattern_error">"Can't parse your vibration pattern!"</string>
 
 </resources>
