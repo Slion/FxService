@@ -570,7 +570,6 @@ public class FxService extends AccessibilityService
     //
     private void setupColorFilter()
     {
-/*
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         if (isScreenFilterEnabled() && mLayout == null)
@@ -627,7 +626,6 @@ public class FxService extends AccessibilityService
             int blackAlpha = ColorUtils.setAlphaComponent(0,0xFF - brightness);
             mLayout.setBackgroundColor(ColorUtils.compositeColors(blackAlpha,color));
         }
-*/
     }
 
 
