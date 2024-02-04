@@ -19,7 +19,8 @@
         <activity
             android:name=".ActivitySettings"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:exported="true">
             <intent-filter>
 
                 <!-- Define it as main activity -->
@@ -33,7 +34,8 @@
         <service
             android:name=".FxService"
             android:label="Fx Service"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -46,7 +48,8 @@
             android:name=".TileServiceBrightnessAdaptive"
             android:icon="@drawable/ic_adaptive_brightness"
             android:label="@string/tile_service_name_adaptive_brightness"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -63,7 +66,8 @@
             android:name=".TileServiceScreenFilter"
             android:icon="@drawable/ic_screen_filter"
             android:label="@string/tile_service_name_fx_brightness"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -80,7 +84,8 @@
             android:name=".TileServiceAutoSync"
             android:icon="@drawable/ic_sync"
             android:label="@string/tile_service_name_auto_sync"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -97,7 +102,8 @@
             android:name=".TileServiceAutoRotate"
             android:icon="@drawable/ic_screen_rotation"
             android:label="@string/tile_service_name_screen_rotation_auto"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>

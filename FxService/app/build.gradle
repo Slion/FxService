@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdk 33
     //buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "net.slions.fxservice"
         minSdkVersion 28
-        targetSdkVersion 30
+        targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
